@@ -1,263 +1,195 @@
-/* ===== متغیرهای رنگ (تم تاریک پیش‌فرض) ===== */
-:root {
-    --primary-color: #3b82f6;
-    --primary-dark: #2563eb;
-    --primary-light: #60a5fa;
-    --accent-color: #8b5cf6;
-    --bg-dark: #0a1118;
-    --bg-card: #111a22;
-    --bg-card-light: #1a2632;
-    --text-primary: #e5e7eb;
-    --text-secondary: #9ca3af;
-    --text-muted: #6b7280;
-    --border-color: #2d3748;
-    --input-bg: #1e2937;
-    --input-border: #334155;
-    --input-focus: #3b82f6;
-    --success-color: #10b981;
-    --warning-color: #f59e0b;
-    --danger-color: #ef4444;
-    --glass-bg: rgba(17, 25, 40, 0.75);
-    --glass-border: rgba(255, 255, 255, 0.05);
-    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.36);
-    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    --border-radius: 20px;
-    --border-radius-sm: 12px;
-    --border-radius-lg: 28px;
-}
-
-/* ===== تم روشن ===== */
-[data-theme="light"] {
-    --primary-color: #2563eb;
-    --primary-dark: #1d4ed8;
-    --primary-light: #3b82f6;
-    --accent-color: #7c3aed;
-    --bg-dark: #f0f4fa;
-    --bg-card: #ffffff;
-    --bg-card-light: #f8fafc;
-    --text-primary: #1e293b;
-    --text-secondary: #475569;
-    --text-muted: #64748b;
-    --border-color: #e2e8f0;
-    --input-bg: #f1f5f9;
-    --input-border: #cbd5e1;
-    --input-focus: #3b82f6;
-    --glass-bg: rgba(255, 255, 255, 0.7);
-    --glass-border: rgba(255, 255, 255, 0.2);
-    --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
-}
-
-/* ===== استایل پایه ===== */
+/* ================== Reset & Base ================== */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-html, body {
-    height: 100vh;
-    overflow: hidden;
-    font-family: 'Vazirmatn', 'Tajawal', sans-serif;
+html {
+    font-size: 16px;
 }
 
 body {
-    background: var(--bg-dark);
-    color: var(--text-primary);
-    line-height: 1.5;
-    transition: background-color 0.3s ease, color 0.3s ease;
-    position: relative;
+    font-family: 'Vazirmatn', 'Tajawal', sans-serif;
+    background: #0a1118;
+    color: #e5e7eb;
+    line-height: 1.6;
 }
 
-body.preload * {
-    animation-duration: 0s !important;
-    transition-duration: 0s !important;
-}
-
-/* ===== کانوس ذرات پس‌زمینه ===== */
-#particles-canvas {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 0;
-    pointer-events: none;
-    opacity: 0.4;
-}
-
-/* ===== کانتینر اصلی ===== */
+/* ================== Layout ================== */
 .container {
     display: flex;
-    height: 100vh;
-    padding: 16px;
-    gap: 16px;
-    max-width: 1400px;
+    gap: 24px;
+    max-width: 1300px;
     margin: 0 auto;
-    position: relative;
-    z-index: 1;
+    padding: 24px;
+    min-height: 100vh;
 }
 
-/* ===== بخش چپ (برندینگ) - با ارتفاع ثابت و بدون اسکرول ===== */
+/* ================== Left Section ================== */
 .left {
-    flex: 0.9;
+    flex: 1.1;
+    background: rgba(17, 25, 40, 0.75);
+    border-radius: 20px;
+    padding: 24px;
     display: flex;
     flex-direction: column;
-    padding: 20px;
-    background: var(--glass-bg);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid var(--glass-border);
-    border-radius: var(--border-radius);
-    box-shadow: var(--glass-shadow);
-    height: calc(100vh - 32px); /* ارتفاع ثابت با احتساب padding کانتینر */
-    overflow: hidden; /* مخفی کردن اسکرول */
-    position: relative;
-}
-
-.left-content {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    overflow-y: auto; /* اجازه اسکرول به محتوا در صورت نیاز */
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-    padding-bottom: 70px; /* فضا برای پلیر */
-}
-
-.left-content::-webkit-scrollbar {
-    display: none;
 }
 
 .image-wrapper {
     width: 100%;
     aspect-ratio: 1/1;
-    border-radius: var(--border-radius-sm);
+    border-radius: 14px;
     overflow: hidden;
     margin-bottom: 20px;
-    box-shadow: var(--glass-shadow);
-    border: 2px solid var(--primary-light);
-    flex-shrink: 0;
 }
 
 .image-wrapper img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.5s ease;
 }
 
-.image-wrapper:hover img {
-    transform: scale(1.05);
-}
-
-.glass-overlay {
-    display: none;
-}
-
-/* ===== محتوای برندینگ - وسط‌چین ===== */
 .branding-content {
-    flex: 1;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    text-align: center;
     gap: 12px;
-    width: 100%;
 }
 
 .branding-logo {
     font-size: 1.6rem;
-    font-weight: 900;
-    margin: 0;
-    background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    line-height: 1.3;
+    font-weight: 800;
 }
 
 .project-name {
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: var(--primary-light);
-    margin: 4px 0;
+    font-size: 1.1rem;
+    color: #60a5fa;
 }
 
 .slogan {
     font-size: 0.95rem;
-    color: var(--text-secondary);
-    margin: 2px 0;
+    color: #9ca3af;
 }
 
-.slogan.highlight {
-    color: var(--primary-light);
-    font-weight: 700;
-    font-size: 1rem;
-    margin: 4px 0;
-}
-
-.branding-features {
+/* ================== Right Section ================== */
+.right {
+    flex: 0.9;
     display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 8px;
     justify-content: center;
+    align-items: flex-start;
+}
+
+.login-box {
     width: 100%;
+    max-width: 420px;
+    background: rgba(17, 25, 40, 0.75);
+    padding: 28px;
+    border-radius: 20px;
 }
 
-.feature-badge {
-    padding: 4px 12px;
-    background: var(--glass-bg);
-    border: 1px solid var(--glass-border);
-    border-radius: 30px;
-    font-size: 0.8rem;
-    color: var(--text-primary);
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
-    transition: var(--transition);
+/* ================== Form ================== */
+.login-title {
+    text-align: center;
+    font-size: 1.6rem;
+    margin-bottom: 8px;
 }
 
-.feature-badge:hover {
-    background: var(--primary-color);
+.login-subtitle {
+    text-align: center;
+    font-size: 0.9rem;
+    margin-bottom: 22px;
+    color: #9ca3af;
+}
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #334155;
+    background: #1e2937;
     color: white;
-    transform: translateY(-1px);
+    font-size: 0.9rem;
 }
 
-/* ===== پلیر موسیقی - با سایز اصلی و固定在 پایین ===== */
-.music-player-container {
-    position: absolute;
-    bottom: 15px;
-    left: 20px;
-    right: 20px;
-    width: auto;
-    background: var(--glass-bg);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid var(--glass-border);
-    border-radius: 50px;
-    padding: 6px 12px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    box-shadow: var(--glass-shadow);
-    z-index: 100;
+input:focus {
+    outline: none;
+    border-color: #3b82f6;
+}
+
+.login-btn {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.login-btn:hover {
+    opacity: 0.9;
+}
+
+/* ================== Helper ================== */
+.helper-text {
+    margin-top: 20px;
     font-size: 0.8rem;
-    height: 55px; /* ارتفاع ثابت */
+    text-align: center;
+    color: #9ca3af;
+}
+
+/* ================== Logos ================== */
+.logos-footer {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-top: 18px;
+}
+
+.logo-card {
+    background: #111a22;
+    padding: 10px;
+    border-radius: 10px;
+    text-align: center;
+    font-size: 0.75rem;
+}
+
+.logo-card img {
+    width: 45px;
+    height: 45px;
+    object-fit: contain;
+    margin-bottom: 6px;
+}
+
+/* ================== Music Player (Moved Inside) ================== */
+.music-player-container {
+    margin-top: 22px;
+    background: #111a22;
+    border-radius: 16px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .music-info-side {
     display: flex;
     align-items: center;
-    gap: 6px;
-    flex-shrink: 0;
+    gap: 10px;
 }
 
 .album-art-wrapper {
-    width: 32px;
-    height: 32px;
+    width: 42px;
+    height: 42px;
     border-radius: 50%;
     overflow: hidden;
-    flex-shrink: 0;
 }
 
 .album-art {
@@ -267,482 +199,41 @@ body.preload * {
 }
 
 .track-details h4 {
-    font-size: 0.75rem;
-    font-weight: 700;
-    color: var(--text-primary);
-    white-space: nowrap;
+    font-size: 0.9rem;
 }
 
 .track-details p {
-    font-size: 0.6rem;
-    color: var(--text-secondary);
-    white-space: nowrap;
-}
-
-.player-center-section {
-    flex: 1;
-    min-width: 100px;
-}
-
-.wave-header {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-}
-
-#currentTime,
-#duration {
-    font-size: 0.6rem;
-    color: var(--text-muted);
-    min-width: 30px;
-}
-
-.music-waveform {
-    flex: 1;
-    height: 20px;
-    background: var(--bg-card);
-    border-radius: 10px;
-    position: relative;
-    overflow: hidden;
-}
-
-.music-waveform::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: var(--progress, 0%);
-    background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
-    border-radius: 10px;
-    transition: width 0.1s linear;
+    font-size: 0.75rem;
+    color: #9ca3af;
 }
 
 .player-controls-group {
     display: flex;
     align-items: center;
-    gap: 4px;
-    flex-shrink: 0;
+    justify-content: space-between;
 }
 
 .main-play-btn {
-    width: 28px;
-    height: 28px;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
-    background: var(--primary-color);
     border: none;
+    background: #3b82f6;
     color: white;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: var(--transition);
-    flex-shrink: 0;
 }
 
-.control-sub-btn {
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    background: var(--bg-card);
-    border: 1px solid var(--border-color);
-    color: var(--text-secondary);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: var(--transition);
-    flex-shrink: 0;
-}
-
-/* ===== بخش راست (فرم ورود) ===== */
-.right {
-    flex: 1.1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-}
-
-.login-box {
-    background: var(--glass-bg);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid var(--glass-border);
-    border-radius: var(--border-radius);
-    padding: 25px;
-    width: 100%;
-    max-width: 440px;
-    box-shadow: var(--glass-shadow);
-    position: relative;
-    max-height: 100%;
-    overflow-y: auto;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-}
-
-.login-box::-webkit-scrollbar {
-    display: none;
-}
-
-/* ===== نوار اطلاعات ===== */
-.info-bar {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
-    padding: 12px;
-    background: var(--bg-card);
-    border-radius: var(--border-radius-sm);
-    border: 1px solid var(--border-color);
-    font-size: 0.8rem;
-}
-
-.datetime-display,
-.ip-display {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    color: var(--text-secondary);
-}
-
-.loading-spinner {
-    width: 14px;
-    height: 14px;
-    border: 2px solid var(--border-color);
-    border-top-color: var(--primary-color);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    display: inline-block;
-}
-
-/* ===== دکمه تغییر تم ===== */
-.theme-toggle {
-    position: absolute;
-    top: 15px;
-    left: 15px;
-    background: var(--bg-card);
-    border: 1px solid var(--border-color);
-    border-radius: 40px;
-    padding: 6px 12px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    color: var(--text-primary);
-    transition: var(--transition);
-    z-index: 10;
-    font-size: 0.9rem;
-}
-
-.theme-toggle:hover {
-    background: var(--primary-color);
-    border-color: var(--primary-color);
-    transform: translateY(-1px);
-}
-
-/* ===== عنوان فرم ===== */
-.login-title {
-    font-size: 1.8rem;
-    font-weight: 900;
-    margin-bottom: 6px;
-    text-align: center;
-    background: linear-gradient(135deg, var(--text-primary), var(--primary-light));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    line-height: 1.2;
-}
-
-.login-subtitle {
-    text-align: center;
-    color: var(--text-secondary);
-    margin-bottom: 20px;
-    font-size: 0.9rem;
-    line-height: 1.5;
-}
-
-/* ===== فرم ===== */
-.login-form {
-    margin-bottom: 20px;
-}
-
-.form-group {
-    margin-bottom: 18px;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 6px;
-    color: var(--text-secondary);
-    font-weight: 500;
-    font-size: 0.85rem;
-}
-
-.input-wrapper {
-    position: relative;
-    display: flex;
-    align-items: center;
-}
-
-.input-icon {
-    position: absolute;
-    right: 12px;
-    font-size: 1rem;
-    color: var(--text-muted);
-    z-index: 1;
-}
-
-input {
-    width: 100%;
-    padding: 12px 45px 12px 15px;
-    background: var(--input-bg);
-    border: 2px solid var(--input-border);
-    border-radius: var(--border-radius-sm);
-    color: var(--text-primary);
-    font-family: inherit;
-    font-size: 0.9rem;
-    transition: var(--transition);
-    direction: rtl;
-}
-
-input:focus {
-    outline: none;
-    border-color: var(--input-focus);
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
-
-/* ===== گزینه‌های فرم ===== */
-.options {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    font-size: 0.85rem;
-}
-
-.remember-me {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    cursor: pointer;
-    color: var(--text-secondary);
-}
-
-.remember-me input[type="checkbox"] {
-    width: 16px;
-    height: 16px;
-    accent-color: var(--primary-color);
-}
-
-.forgot-link {
-    color: var(--primary-light);
-    text-decoration: none;
-    font-size: 0.85rem;
-    transition: var(--transition);
-}
-
-/* ===== دکمه ورود ===== */
-.login-btn {
-    width: 100%;
-    padding: 14px;
-    background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
-    border: none;
-    border-radius: var(--border-radius-sm);
-    color: white;
-    font-family: inherit;
-    font-size: 1rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: var(--transition);
-}
-
-.login-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
-}
-
-/* ===== متن کمکی ===== */
-.helper-text {
-    text-align: center;
-    margin: 16px 0;
-    padding: 12px;
-    background: var(--bg-card);
-    border-radius: var(--border-radius-sm);
-    border: 1px solid var(--border-color);
-    font-size: 0.8rem;
-}
-
-.helper-text p {
-    color: var(--text-secondary);
-    margin-bottom: 8px;
-}
-
-.helper-contact {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    color: var(--text-primary);
-    font-size: 0.8rem;
-}
-
-/* ===== نمایش آب و هوا ===== */
-.weather-display {
-    background: var(--bg-card);
-    padding: 10px;
-    border-radius: var(--border-radius-sm);
-    margin: 12px 0;
-    text-align: center;
-    color: var(--text-secondary);
-    font-size: 0.8rem;
-    border: 1px solid var(--border-color);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-}
-
-/* ===== لوگوها ===== */
-.logos-footer {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-    margin: 16px 0;
-}
-
-.logo-card {
-    background: var(--bg-card);
-    padding: 8px;
-    border-radius: var(--border-radius-sm);
-    text-align: center;
-    border: 1px solid var(--border-color);
-    transition: var(--transition);
-    font-size: 0.7rem;
-}
-
-.logo-card:hover {
-    transform: translateY(-2px);
-    border-color: var(--primary-color);
-}
-
-.logo-card img {
-    width: 40px;
-    height: 40px;
-    object-fit: contain;
-    margin-bottom: 4px;
-}
-
-.logo-card span {
-    display: block;
-    color: var(--text-secondary);
-}
-
-/* ===== لینک‌های مفید ===== */
-.useful-links {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 12px;
-    flex-wrap: wrap;
-    margin-top: 12px;
-    padding-top: 12px;
-    border-top: 1px solid var(--border-color);
-    font-size: 0.8rem;
-}
-
-.useful-link {
-    color: var(--text-secondary);
-    text-decoration: none;
-    transition: var(--transition);
-}
-
-.useful-link:hover {
-    color: var(--primary-light);
-}
-
-/* ===== انیمیشن‌ها ===== */
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
-
-/* ===== مدیا کوئری‌ها ===== */
-@media (max-width: 992px) {
+/* ================== Responsive ================== */
+@media (max-width: 900px) {
     .container {
-        padding: 12px;
-        gap: 12px;
+        flex-direction: column;
     }
-    
-    .branding-logo {
-        font-size: 1.4rem;
-    }
-    
-    .left {
-        flex: 0.8;
-    }
-    
-    .right {
-        flex: 1.2;
-    }
-}
 
-@media (max-width: 768px) {
     .left {
         display: none;
     }
-    
-    .container {
-        justify-content: center;
-    }
-    
-    .right {
-        flex: 1;
-    }
-    
-    .login-box {
-        max-width: 400px;
-    }
-    
-    /* بازگرداندن پلیر به حالت fixed در موبایل */
-    .music-player-container {
-        position: fixed;
-        bottom: 10px;
-        left: 10px;
-        right: 10px;
-        width: auto;
-        border-radius: 30px;
-        flex-wrap: wrap;
-        justify-content: center;
-        height: auto;
-        min-height: 50px;
-    }
-}
 
-@media (max-width: 480px) {
-    .info-bar {
-        flex-direction: column;
-        gap: 8px;
-        align-items: center;
-        text-align: center;
-    }
-    
-    .theme-toggle {
-        position: relative;
-        top: auto;
-        left: auto;
-        margin: 0 auto 15px;
-        width: fit-content;
-    }
-    
-    .login-title {
-        font-size: 1.5rem;
-    }
-    
-    .logos-footer {
-        grid-template-columns: 1fr;
-    }
-    
-    .options {
-        flex-direction: column;
-        gap: 10px;
-        align-items: flex-start;
+    .right {
+        justify-content: center;
     }
 }
