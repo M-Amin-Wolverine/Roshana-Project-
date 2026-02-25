@@ -120,14 +120,15 @@ body.preload * {
 
 .image-wrapper {
     width: 100%;
-    aspect-ratio: 1/1; /* مربع کردن تصویر */
+    aspect-ratio: 11 / 6;
     border-radius: var(--border-radius-sm);
     overflow: hidden;
-    margin-bottom: 16px;
+    margin-bottom: 17px;
     box-shadow: var(--glass-shadow);
-    border: 2px solid var(--primary-light);
+    border: -13px solid var(--primary-light);
     flex-shrink: 0;
 }
+
 
 .image-wrapper img {
     width: 100%;
