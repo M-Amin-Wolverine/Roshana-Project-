@@ -2,108 +2,531 @@
 <html lang="fa" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ورود به روشنــا | پروژه نور امید</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes"/>
+  <meta name="theme-color" content="#0a1118"/>
+  <meta name="description" content="روشنــا | سامانه یکپارچه پروژه نور امید - دانشگاه صدا و سیما"/>
+  <meta name="keywords" content="روشنا, نور امید, دانشگاه صدا و سیما, رسانه انقلاب, سامانه یکپارچه">
+  <meta name="author" content="دانشگاه صدا و سیما">
+  <meta property="og:title" content="روشنــا | پروژه نور امید">
+  <meta property="og:description" content="سامانه یکپارچه پروژه نور امید - دانشگاه صدا و سیما">
+  <meta property="og:type" content="website">
+  <title>روشنــا | سامانه هوشمند پروژه نور امید - دانشگاه صدا و سیما</title>
 
-  <!-- فونت‌های مناسب فارسی -->
+  <!-- فونت‌های بهینه‌سازی شده -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700;900&family=Tajawal:wght@700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="css/style.css" />
+  <!-- Font Awesome برای آیکون‌های حرفه‌ای -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- AOS انیمیشن -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+  <!-- فایل CSS جدا - لینک به فایل استایل -->
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌟</text></svg>">
 </head>
-<body data-theme="dark">
+<body data-theme="dark" class="preload">
 
-  <!-- ذرات پس‌زمینه -->
-  <canvas id="particles-canvas"></canvas>
+  <!-- ذرات نور پس‌زمینه با WebGL -->
+  <canvas id="particles-canvas" aria-hidden="true"></canvas>
 
   <div class="container">
-
-    <!-- سمت چپ - برندینگ (فقط دسکتاپ) -->
-    <div class="left">
+    <!-- بخش چپ - برندینگ -->
+    <section class="left" aria-label="بخش معرفی و برندینگ" data-aos="fade-left" data-aos-duration="1000">
       <div class="image-wrapper">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/f/f4/%D8%B5%D8%AD%D9%86_%D9%88%D8%B1%D9%88%D8%AF%DB%8C_%D8%AF%D8%A7%D9%86%D8%B4%DA%AF%D8%A7%D9%87_%D8%B5%D8%AF%D8%A7_%D9%88_%D8%B3%DB%8C%D9%85%D8%A7.png" 
-             alt="صحن ورودی دانشگاه صدا و سیما" loading="lazy">
+        <img 
+          src="https://upload.wikimedia.org/wikipedia/commons/f/f4/%D8%B5%D8%AD%D9%86_%D9%88%D8%B1%D9%88%D8%AF%DB%8C_%D8%AF%D8%A7%D9%86%D8%B4%DA%AF%D8%A7%D9%87_%D8%B5%D8%AF%D8%A7_%D9%88_%D8%B3%DB%8C%D9%85%D8%A7.png"
+          alt="صحن ورودی دانشگاه صدا و سیما - نماد پروژه روشنــا"
+          loading="lazy"
+          decoding="async">
         <div class="glass-overlay"></div>
       </div>
 
       <div class="branding-content">
-        <h2 class="branding-logo">دانشگاه صدا و سیما</h2>
-        <div class="project-name">پروژه «نور امید»</div>
-        <p class="slogan">جوانان انقلابی، روایت را به دست می‌گیرند</p>
-        <p class="slogan">روشنــا: مشعل امید در جنگ رسانه‌ای</p>
+        <h1 class="branding-logo">
+          <i class="fas fa-film"></i>
+          دانشگاه صدا و سیما
+        </h1>
+        <div class="project-name">
+          <i class="fas fa-star"></i>
+          پروژه «نور امید»
+        </div>
+        <p class="slogan">
+          <i class="fas fa-quote-right"></i>
+          جوانان انقلابی، روایت را به دست می‌گیرند
+        </p>
+        <p class="slogan highlight">
+          <i class="fas fa-bolt"></i>
+          روشنــا: مشعل امید در جنگ رسانه‌ای
+        </p>
+
+        <!-- ویژگی‌های برجسته با آیکون -->
+        <div class="branding-features">
+          <span class="feature-badge"><i class="fas fa-rocket"></i> نسل نوین رسانه</span>
+          <span class="feature-badge"><i class="fas fa-bolt"></i> سریع، امن، هوشمند</span>
+          <span class="feature-badge"><i class="fas fa-globe"></i> یکپارچه و متصل</span>
+          <span class="feature-badge"><i class="fas fa-shield-alt"></i> پشتیبانی ۲۴/۷</span>
+          <span class="feature-badge"><i class="fas fa-microchip"></i> هوش مصنوعی</span>
+        </div>
       </div>
-    </div>
+    </section>
 
-    <!-- سمت راست - فرم ورود -->
-    <div class="right">
+    <!-- بخش راست - فرم ورود -->
+    <main class="right" role="main" aria-label="فرم ورود به سامانه روشنــا" data-aos="fade-right" data-aos-duration="1000">
       <div class="login-box">
-
-        <!-- نوار اطلاعات بالا -->
+        <!-- نوار اطلاعات پیشرفته -->
         <div class="info-bar">
-          <div id="datetime" class="datetime-display">در حال بارگذاری...</div>
-          <div id="user-ip" class="ip-display">IP: در حال بارگذاری...</div>
+          <div id="datetime" class="datetime-display">
+            <i class="fas fa-calendar-alt"></i>
+            <span>در حال بارگذاری...</span>
+          </div>
+          <div id="user-ip" class="ip-display">
+            <i class="fas fa-network-wired"></i>
+            <span>در حال بارگذاری...</span>
+          </div>
+          <div id="browser-info" class="browser-display">
+            <i class="fas fa-globe"></i>
+            <span>در حال بارگذاری...</span>
+          </div>
         </div>
 
-        <!-- دکمه تغییر تم (چپ بالا) -->
-        <button id="theme-toggle" class="theme-toggle" aria-label="تغییر تم روشن/تاریک">
-          <span class="icon-sun">☀️</span>
-          <span class="icon-moon">🌙</span>
+        <!-- دکمه تغییر تم -->
+        <button id="theme-toggle" class="theme-toggle" aria-label="تغییر بین تم روشن و تاریک" title="تغییر تم">
+          <i class="fas fa-sun"></i>
+          <i class="fas fa-moon"></i>
+          <span>تغییر تم</span>
         </button>
 
-        <h1>ورود به سامانه روشنــا</h1>
-        <p>به روشنـا، پروژه نور امید، در دل جوانان انقلابی دانشگاه صدا و سیما خوش آمدید!</p>
+        <!-- عنوان و خوش‌آمدگویی -->
+        <h2 class="login-title">
+          <i class="fas fa-sign-in-alt"></i>
+          ورود به سامانه روشنــا
+        </h2>
+        <p class="login-subtitle">
+          به <span class="highlight">پروژه نور امید</span> خوش آمدید!
+          <br>
+          <i class="fas fa-microphone-alt"></i>
+          دانشگاه صدا و سیما – <strong>نبض رسانه انقلاب</strong>
+        </p>
 
-        <!-- فرم ورود -->
-        <div class="form-group">
-          <label for="username">نام کاربری</label>
-          <input type="text" id="username" placeholder="نام کاربری خود را وارد کنید" required autofocus autocomplete="username">
-        </div>
+        <!-- فرم پیشرفته با اعتبارسنجی -->
+        <form id="login-form" class="login-form" autocomplete="off" novalidate>
+          <div class="form-group">
+            <label for="username">
+              <i class="fas fa-user"></i>
+              نام کاربری
+            </label>
+            <div class="input-wrapper">
+              <span class="input-icon"><i class="fas fa-user-circle"></i></span>
+              <input 
+                type="text" 
+                id="username" 
+                placeholder="student@iribu.ac.ir"
+                required 
+                autofocus 
+                minlength="3"
+                pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
+                aria-describedby="username-hint">
+            </div>
+            <span id="username-hint" class="input-hint">
+              <i class="fas fa-info-circle"></i>
+              ایمیل دانشگاهی یا نام کاربری
+            </span>
+          </div>
 
-        <div class="form-group password-group">
-          <label for="password">رمز عبور</label>
-          <input type="password" id="password" placeholder="رمز عبور خود را وارد کنید" required autocomplete="current-password">
-          <button type="button" class="toggle-password" aria-label="نمایش یا مخفی کردن رمز عبور">👁</button>
-        </div>
+          <div class="form-group password-group">
+            <label for="password">
+              <i class="fas fa-lock"></i>
+              رمز عبور
+            </label>
+            <div class="input-wrapper">
+              <span class="input-icon"><i class="fas fa-key"></i></span>
+              <input 
+                type="password" 
+                id="password" 
+                placeholder="••••••••"
+                required 
+                minlength="8"
+                pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+                aria-describedby="password-hint">
+              <button type="button" class="toggle-password" aria-label="نمایش یا مخفی کردن رمز عبور" title="نمایش/مخفی">
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
+            <span id="password-hint" class="input-hint">
+              <i class="fas fa-shield-alt"></i>
+              حداقل ۸ کاراکتر با حروف بزرگ، کوچک و عدد
+            </span>
+          </div>
 
-        <div class="options">
-          <label class="remember-me">
-            <input type="checkbox" id="remember"> مرا به خاطر بسپار
-          </label>
-          <a href="#" class="forgot-link">فراموشی رمز عبور؟</a>
-        </div>
+          <div class="options">
+            <label class="remember-me">
+              <input type="checkbox" id="remember" checked>
+              <span class="checkbox-text">مرا به خاطر بسپار</span>
+            </label>
+            <a href="#" class="forgot-link" id="forgot-password">
+              <i class="fas fa-question-circle"></i>
+              فراموشی رمز عبور؟
+            </a>
+          </div>
 
-        <button class="login-btn">ورود به میدان</button>
+          <button type="submit" class="login-btn" id="login-btn">
+            <span class="btn-text">ورود به میدان</span>
+            <span class="btn-icon"><i class="fas fa-arrow-left"></i></span>
+          </button>
+        </form>
 
+        <!-- متن کمکی + تماس با قابلیت کپی -->
         <div class="helper-text">
-          جهت بازیابی کلمه عبور یا مشکلات ورود با پشتیبانی تماس بگیرید
+          <p>
+            <i class="fas fa-headset"></i>
+            جهت بازیابی رمز یا مشکلات ورود با پشتیبانی تماس بگیرید:
+          </p>
+          <div class="helper-contact">
+            <span onclick="copyToClipboard('02122168540')">
+              <i class="fas fa-phone"></i>
+              ۰۲۱-۲۲۱۶۸۵۴۰
+            </span>
+            <span onclick="copyToClipboard('support@iribu.ac.ir')">
+              <i class="fas fa-envelope"></i>
+              support@iribu.ac.ir
+            </span>
+          </div>
         </div>
 
-        <!-- لوگوهای پایین -->
+        <!-- آب و هوا با API -->
+        <div id="weather" class="weather-display">
+          <i class="fas fa-cloud-sun"></i>
+          <span>در حال دریافت اطلاعات آب و هوا...</span>
+        </div>
+
+        <!-- لوگوها با tooltip -->
         <div class="logos-footer">
-          <div class="logo-card">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/IRIB_Logo.svg/512px-IRIB_Logo.svg.png" alt="سازمان صدا و سیما" loading="lazy">
+          <div class="logo-card" data-tooltip="سازمان صدا و سیما">
+            <img src="https://iribonline.ir/files/pr/1404/other/header-new2.jpg" 
+                 alt="لوگوی سازمان صدا و سیما" 
+                 loading="lazy"
+                 onerror="this.src='https://via.placeholder.com/50/4a90e2/ffffff?text=IRIB'">
             <span>سازمان صدا و سیما</span>
           </div>
-          <div class="logo-card">
-            <img src="https://media.licdn.com/dms/image/v2/C560BAQG7BWjIBZP7MA/company-logo_200_200/company-logo_200_200/0/1644253774514?e=2147483647&v=beta&t=6xhj-uOY5bFX36aq_wtJxxr5BS_3cY7bdgdtLI3XF58" alt="دانشگاه صدا و سیما" loading="lazy">
+          <div class="logo-card" data-tooltip="دانشگاه صدا و سیما">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/IRIB_Logo.svg/512px-IRIB_Logo.svg.png" 
+                 alt="لوگوی دانشگاه صدا و سیما" 
+                 loading="lazy"
+                 onerror="this.src='https://via.placeholder.com/50/9b59b6/ffffff?text=IRIBU'">
             <span>دانشگاه صدا و سیما</span>
           </div>
-          <div class="logo-card">
-            <img src="images/1669183679155.jpg" alt="پروژه نور امید" loading="lazy">
+          <div class="logo-card" data-tooltip="پروژه نور امید">
+            <img src="https://via.placeholder.com/50/ffd966/0a0f1a?text=نور+امید" 
+                 alt="پروژه نور امید" 
+                 loading="lazy">
             <span>پروژه نور امید</span>
           </div>
-          <div class="logo-card">
-            <img src="images/f4af4631-3005-4221-8087-5009c7c48b80.jpg" alt="روشنا" loading="lazy">
+          <div class="logo-card" data-tooltip="روشنــا">
+            <img src="https://via.placeholder.com/50/4a90e2/ffffff?text=روشنا" 
+                 alt="لوگوی روشنــا" 
+                 loading="lazy">
             <span>روشنــا</span>
           </div>
         </div>
 
+        <!-- لینک‌های مفید با آیکون -->
+        <div class="useful-links">
+          <a href="#" class="useful-link"><i class="fas fa-info-circle"></i> درباره روشنــا</a>
+          <span class="link-separator">|</span>
+          <a href="#" class="useful-link"><i class="fas fa-headset"></i> تماس با پشتیبانی</a>
+          <span class="link-separator">|</span>
+          <a href="#" class="useful-link"><i class="fas fa-shield-alt"></i> قوانین و حریم خصوصی</a>
+          <span class="link-separator">|</span>
+          <a href="#" class="useful-link"><i class="fas fa-newspaper"></i> اخبار و اطلاعیه‌ها</a>
+        </div>
       </div>
-    </div>
+    </main>
   </div>
 
-  <!-- اسکریپت اصلی -->
+  <!-- دکمه موسیقی با افکت -->
+<!-- پلیر موسیقی پیشرفته -->
+<div class="music-player-container" id="musicPlayerContainer">
+  <button id="musicPlayPause" class="music-control-btn" title="پخش/توقف">
+    <i class="fas fa-play"></i>
+  </button>
+  
+  <div class="music-waveform" id="waveform"></div>
+  
+  <div class="music-volume-container">
+    <i class="fas fa-volume-up" id="volumeIcon"></i>
+    <input type="range" id="volumeControl" class="volume-slider" min="0" max="100" value="50">
+  </div>
+  
+  <button id="musicClose" class="music-close-btn" title="بستن پلیر">
+    <i class="fas fa-times"></i>
+  </button>
+</div>
+
+<!-- دکمه باز کردن پلیر (وقتی بسته باشه) -->
+<button id="musicToggleBtn" class="music-toggle-btn" title="باز کردن پلیر موسیقی">
+  <i class="fas fa-music"></i>
+</button>
+
+  <!-- کانتینر نوتیفیکیشن -->
+  <div id="notification-container"></div>
+
+  <!-- اسکریپت اصلی جداگانه -->
   <script src="js/script.js"></script>
+  
+  <!-- اسکریپت داخلی برای جلوگیری از وابستگی به فایل خارجی -->
+  <script>
+    // جلوگیری از FOUC
+    document.body.classList.remove('preload');
+
+    // مقداردهی اولیه AOS
+    if (typeof AOS !== 'undefined') {
+      AOS.init({
+        duration: 1000,
+        once: true,
+      });
+    }
+
+    // تابع کپی به کلیپ‌بورد
+    window.copyToClipboard = function(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        showNotification('✅ کپی شد: ' + text, 'success');
+      }).catch(() => {
+        showNotification('❌ خطا در کپی', 'error');
+      });
+    };
+
+    // نمایش نوتیفیکیشن
+    function showNotification(message, type = 'success') {
+      const container = document.getElementById('notification-container');
+      const notification = document.createElement('div');
+      notification.className = 'notification';
+      
+      let icon = 'fa-check-circle';
+      if (type === 'error') icon = 'fa-exclamation-circle';
+      else if (type === 'warning') icon = 'fa-exclamation-triangle';
+      
+      notification.innerHTML = `
+        <i class="fas ${icon}"></i>
+        <span>${message}</span>
+      `;
+      
+      container.appendChild(notification);
+
+      setTimeout(() => {
+        notification.style.animation = 'slideOut 0.3s ease forwards';
+        setTimeout(() => notification.remove(), 300);
+      }, 3000);
+    }
+
+    // تغییر تم
+    document.getElementById('theme-toggle').addEventListener('click', function() {
+      const body = document.body;
+      const currentTheme = body.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      body.setAttribute('data-theme', newTheme);
+      
+      // آپدیت آیکون‌ها
+      const sunIcon = this.querySelector('.fa-sun');
+      const moonIcon = this.querySelector('.fa-moon');
+      
+      if (newTheme === 'dark') {
+        sunIcon.style.display = 'inline-block';
+        moonIcon.style.display = 'none';
+      } else {
+        sunIcon.style.display = 'none';
+        moonIcon.style.display = 'inline-block';
+      }
+      
+      showNotification(`تم به ${newTheme === 'dark' ? 'تاریک' : 'روشن'} تغییر یافت`);
+    });
+
+    // نمایش/مخفی کردن رمز
+    document.querySelector('.toggle-password').addEventListener('click', function() {
+      const input = document.getElementById('password');
+      const icon = this.querySelector('i');
+      
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+      } else {
+        input.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+      }
+    });
+
+    // دکمه موسیقی
+    let isPlaying = false;
+    const musicBtn = document.getElementById('music-toggle');
+    musicBtn.addEventListener('click', function() {
+      isPlaying = !isPlaying;
+      const icon = this.querySelector('i');
+      
+      if (isPlaying) {
+        icon.classList.remove('fa-music');
+        icon.classList.add('fa-stop');
+        showNotification('🎵 پخش موسیقی پس‌زمینه...');
+      } else {
+        icon.classList.remove('fa-stop');
+        icon.classList.add('fa-music');
+        showNotification('⏹ موسیقی متوقف شد');
+      }
+    });
+
+    // تاریخ و زمان لحظه‌ای
+    function updateDateTime() {
+      const now = new Date();
+      const options = { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      };
+      const datetimeSpan = document.querySelector('#datetime span');
+      if (datetimeSpan) {
+        datetimeSpan.textContent = now.toLocaleDateString('fa-IR', options);
+      }
+    }
+    updateDateTime();
+    setInterval(updateDateTime, 1000);
+
+    // اطلاعات مرورگر
+    const browserSpan = document.querySelector('#browser-info span');
+    if (browserSpan) {
+      const ua = navigator.userAgent;
+      let browserName = 'ناشناس';
+      
+      if (ua.indexOf('Chrome') > -1) browserName = 'کروم';
+      else if (ua.indexOf('Firefox') > -1) browserName = 'فایرفاکس';
+      else if (ua.indexOf('Safari') > -1) browserName = 'سافاری';
+      else if (ua.indexOf('Edge') > -1) browserName = 'اج';
+      
+      browserSpan.textContent = browserName;
+    }
+
+    // IP کاربر
+    fetch('https://api.ipify.org?format=json')
+      .then(response => response.json())
+      .then(data => {
+        const ipSpan = document.querySelector('#user-ip span');
+        if (ipSpan) ipSpan.textContent = `IP: ${data.ip}`;
+      })
+      .catch(() => {
+        const ipSpan = document.querySelector('#user-ip span');
+        if (ipSpan) ipSpan.textContent = 'IP: نامشخص';
+      });
+
+    // آب و هوا
+    fetch('https://api.open-meteo.com/v1/forecast?latitude=35.6892&longitude=51.3890&current_weather=true')
+      .then(response => response.json())
+      .then(data => {
+        const weather = data.current_weather;
+        const temp = weather.temperature;
+        const condition = weather.weathercode;
+        
+        let icon = 'fa-cloud-sun';
+        let conditionText = '';
+        
+        if (condition === 0) {
+          icon = 'fa-sun';
+          conditionText = 'آفتابی';
+        } else if (condition >= 1 && condition <= 3) {
+          icon = 'fa-cloud-sun';
+          conditionText = 'نیمه ابری';
+        } else if (condition >= 51 && condition <= 67) {
+          icon = 'fa-cloud-rain';
+          conditionText = 'بارانی';
+        } else if (condition >= 71 && condition <= 77) {
+          icon = 'fa-snowflake';
+          conditionText = 'برفی';
+        }
+        
+        const weatherIcon = document.querySelector('#weather i');
+        const weatherSpan = document.querySelector('#weather span');
+        
+        if (weatherIcon) weatherIcon.className = `fas ${icon}`;
+        if (weatherSpan) weatherSpan.textContent = `تهران: ${temp}°C | ${conditionText}`;
+      })
+      .catch(() => {
+        const weatherSpan = document.querySelector('#weather span');
+        if (weatherSpan) weatherSpan.textContent = 'تهران: ۲۵°C | آفتابی';
+      });
+
+    // فراموشی رمز
+    document.getElementById('forgot-password').addEventListener('click', function(e) {
+      e.preventDefault();
+      showNotification('📧 لینک بازیابی به ایمیل شما ارسال شد');
+    });
+
+    // ارسال فرم
+    document.getElementById('login-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      
+      if (username && password) {
+        showNotification('🚀 در حال ورود به سامانه...');
+        setTimeout(() => {
+          showNotification('✅ ورود موفقیت‌آمیز بود! خوش آمدید.');
+        }, 2000);
+      } else {
+        showNotification('❌ لطفاً همه فیلدها را پر کنید', 'error');
+      }
+    });
+
+    // ذرات پس‌زمینه ساده
+    const canvas = document.getElementById('particles-canvas');
+    if (canvas) {
+      const ctx = canvas.getContext('2d');
+      
+      function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      resizeCanvas();
+      window.addEventListener('resize', resizeCanvas);
+
+      const particles = [];
+      const particleCount = 50;
+
+      for (let i = 0; i < particleCount; i++) {
+        particles.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          radius: Math.random() * 2 + 0.5,
+          speedX: (Math.random() - 0.5) * 0.3,
+          speedY: (Math.random() - 0.5) * 0.3,
+        });
+      }
+
+      function animateParticles() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        particles.forEach(p => {
+          p.x += p.speedX;
+          p.y += p.speedY;
+          
+          if (p.x < 0 || p.x > canvas.width) p.speedX *= -1;
+          if (p.y < 0 || p.y > canvas.height) p.speedY *= -1;
+          
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(74, 144, 226, 0.3)';
+          ctx.fill();
+        });
+        
+        requestAnimationFrame(animateParticles);
+      }
+      animateParticles();
+    }
+  </script>
 </body>
 </html>
