@@ -1,6 +1,6 @@
 /* =================== پروژه روشنــا - نسخه نهایی CSS =================== */
 /* Author: تیم توسعه روشنــا */
-/* Version: 3.0.1 */
+/* Version: 3.0.2 */
 /* Last Update: 2026-02 */
 /* =================== متغیرهای اصلی با پالت رنگی گسترده =================== */
 :root {
@@ -45,7 +45,7 @@
 
   /* گردی گوشه‌ها */
   --radius-sm: 8px;
-  --radius-md: 12px;   /* کمی نرم‌تر از قبل */
+  --radius-md: 12px;
   --radius-lg: 20px;
   --radius-xl: 28px;
   --radius-full: 9999px;
@@ -111,7 +111,7 @@ body[data-theme="light"] {
 }
 
 html {
-  font-size: 100%;   /* بهتر از ثابت 16px */
+  font-size: 100%;
   scroll-behavior: smooth;
 }
 
@@ -126,11 +126,16 @@ body {
   transition: background-color var(--transition), color var(--transition);
 }
 
-/* ... بقیه کد شما تقریباً بدون تغییر ... */
+/* ذرات نور پس‌زمینه */
+#particles-canvas {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: var(--z-negative);
+  opacity: 0.75;
+}
 
-/* چند اصلاح کوچک پیشنهادی: */
-
-/* اسکرول‌بار زیباتر و سازگارتر */
+/* اسکرول‌بار */
 ::-webkit-scrollbar {
   width: 5px;
   height: 5px;
@@ -146,58 +151,14 @@ body {
   background: var(--primary-dark);
 }
 
-/* بهبود دکمه ورود */
-.login-btn {
-  width: 100%;
-  padding: 1.1rem;
-  border: none;
-  border-radius: var(--radius-md);
-  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-  color: #000;
-  font-size: 1.05rem;
-  font-weight: 700;
-  letter-spacing: 0.4px;
-  cursor: pointer;
-  transition: var(--transition);
-  box-shadow: 0 6px 24px var(--primary-glow);
-}
-
-.login-btn:hover,
-.login-btn:focus-visible {
-  transform: translateY(-3px) scale(1.015);
-  box-shadow: 0 12px 36px var(--primary-glow);
-  outline: none;
-}
-
-.login-btn:active {
-  transform: translateY(-1px);
-}
-
-/* بهبود input ها در حالت فوکوس */
-.form-group input:focus {
-  border-color: var(--primary);
-  box-shadow: 0 0 0 4px color-mix(in srgb, var(--primary) 18%, transparent);
-  background: color-mix(in srgb, var(--glass-bg) 95%, var(--primary-soft));
-}
-
-/* پشتیبانی بهتر از prefers-reduced-motion */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    transition: none !important;
-    animation: none !important;
-  }
-}
-
-/* =================== کانتینر اصلی =================== */
+/* کانتینر اصلی */
 .container {
   display: flex;
   height: 100vh;
   overflow: hidden;
 }
 
-/* =================== سمت چپ =================== */
+/* سمت چپ - برندینگ */
 .left {
   flex: 1.2;
   position: relative;
@@ -206,7 +167,6 @@ body {
   justify-content: center;
   overflow: hidden;
 }
-
 .image-wrapper {
   width: 85%;
   height: 85%;
@@ -215,14 +175,12 @@ body {
   position: relative;
   box-shadow: var(--shadow-hard);
 }
-
 .image-wrapper img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   opacity: 0.85;
 }
-
 .glass-overlay {
   position: absolute;
   inset: 0;
@@ -232,7 +190,7 @@ body {
   border-radius: var(--radius-xl);
 }
 
-/* =================== محتوای برندینگ =================== */
+/* محتوای برندینگ */
 .branding-content {
   position: absolute;
   top: 50%;
@@ -242,7 +200,6 @@ body {
   z-index: 2;
   width: 90%;
 }
-
 .branding-logo {
   font-size: 2.5rem;
   font-weight: 900;
@@ -252,27 +209,43 @@ body {
   color: transparent;
   margin-bottom: 0.5rem;
 }
-
 .project-name {
   font-size: 2rem;
   color: var(--primary);
   margin: 0.5rem 0;
 }
-
 .slogan {
   font-size: 1.1rem;
   line-height: 1.6;
   opacity: 0.9;
   margin-bottom: 0.25rem;
 }
-
-.slogan:last-of-type {
+.slogan:last-of-type,
+.slogan.highlight {
   font-size: 1.2rem;
   color: var(--primary);
   margin-top: 0.5rem;
+  font-weight: 600;
 }
 
-/* =================== پنل راست =================== */
+.branding-features {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  justify-content: center;
+}
+.feature-badge {
+  background: var(--primary-soft);
+  color: var(--primary);
+  padding: 0.4rem 1rem;
+  border-radius: var(--radius-full);
+  font-size: 0.9rem;
+  font-weight: 600;
+  border: 1px solid var(--primary);
+}
+
+/* پنل راست */
 .right {
   flex: 1;
   display: flex;
@@ -284,20 +257,41 @@ body {
   overflow-y: auto;
 }
 
-/* =================== کادر ورود =================== */
+/* کادر ورود */
 .login-box {
   width: 100%;
   max-width: 420px;
   text-align: center;
 }
 
-/* =================== نوار اطلاعات =================== */
+.login-title {
+  font-size: 2rem;
+  margin: 1.5rem 0 0.5rem;
+  background: linear-gradient(135deg, white, var(--primary));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-weight: 800;
+}
+
+.login-subtitle {
+  font-size: 1rem;
+  color: var(--text-muted);
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+.university-name {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+/* نوار اطلاعات */
 .info-bar {
   display: flex;
   gap: 1rem;
   margin-bottom: 2rem;
 }
-
 .datetime-display,
 .ip-display {
   flex: 1;
@@ -309,7 +303,7 @@ body {
   text-align: center;
 }
 
-/* =================== دکمه تغییر تم =================== */
+/* دکمه تغییر تم */
 .theme-toggle {
   position: absolute;
   top: 1rem;
@@ -327,35 +321,24 @@ body {
   transition: var(--transition);
   z-index: 100;
 }
-
 .theme-toggle:hover {
   transform: scale(1.1);
   border-color: var(--primary);
 }
-
-/* =================== عنوان =================== */
-.login-box h1 {
-  font-size: 2rem;
-  margin: 1.5rem 0 0.5rem;
-  background: linear-gradient(135deg, white, var(--primary));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+.theme-toggle .icon-sun,
+.theme-toggle .icon-moon {
+  transition: opacity var(--transition-fast);
 }
+body[data-theme="light"] .theme-toggle .icon-sun { opacity: 0; }
+body[data-theme="light"] .theme-toggle .icon-moon { opacity: 1; }
+body[data-theme="dark"] .theme-toggle .icon-sun { opacity: 1; }
+body[data-theme="dark"] .theme-toggle .icon-moon { opacity: 0; }
 
-.login-box p {
-  font-size: 0.95rem;
-  color: var(--text-muted);
-  margin-bottom: 2rem;
-  line-height: 1.6;
-}
-
-/* =================== گروه‌های فرم =================== */
+/* گروه‌های فرم */
 .form-group {
   margin-bottom: 1.5rem;
   position: relative;
 }
-
 .form-group label {
   position: absolute;
   right: 1rem;
@@ -367,10 +350,21 @@ body {
   z-index: 2;
   border-radius: var(--radius-sm);
 }
-
+.input-wrapper {
+  position: relative;
+}
+.input-icon {
+  position: absolute;
+  right: 1.2rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  font-size: 1.3rem;
+  pointer-events: none;
+}
 .form-group input {
   width: 100%;
-  padding: 1rem 1.2rem;
+  padding: 1rem 3rem 1rem 1.2rem; /* فضای آیکون سمت راست */
   border-radius: var(--radius-md);
   border: 1px solid var(--glass-border);
   background: var(--glass-bg);
@@ -378,19 +372,22 @@ body {
   font-size: 0.95rem;
   transition: var(--transition);
 }
-
 .form-group input:focus {
   outline: none;
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(0,224,255,0.2);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--primary) 18%, transparent);
+  background: color-mix(in srgb, var(--glass-bg) 95%, var(--primary-soft));
+}
+.input-hint {
+  display: block;
+  margin-top: 0.4rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  opacity: 0.8;
 }
 
-/* =================== گروه رمز عبور =================== */
-.password-group {
-  position: relative;
-}
-
-.toggle-password {
+/* گروه رمز عبور */
+.password-group .toggle-password {
   position: absolute;
   left: 1rem;
   top: 50%;
@@ -408,12 +405,11 @@ body {
   justify-content: center;
   border-radius: 50%;
 }
-
 .toggle-password:hover {
   background: var(--primary-soft);
 }
 
-/* =================== گزینه‌ها =================== */
+/* گزینه‌ها */
 .options {
   display: flex;
   justify-content: space-between;
@@ -421,95 +417,76 @@ body {
   margin: 1rem 0 1.5rem;
   font-size: 0.9rem;
 }
-
 .remember-me {
   display: flex;
   align-items: center;
   gap: 0.5rem;
   cursor: pointer;
 }
-
 .remember-me input[type="checkbox"] {
   width: 16px;
   height: 16px;
   accent-color: var(--primary);
 }
-
+.checkbox-text {
+  font-size: 0.9rem;
+  color: var(--text);
+}
 .forgot-link {
   color: var(--primary);
   text-decoration: none;
   font-size: 0.9rem;
 }
-
 .forgot-link:hover {
   text-decoration: underline;
 }
 
-/* =================== دکمه ورود =================== */
+/* دکمه ورود */
 .login-btn {
   width: 100%;
-  padding: 1rem;
+  padding: 1.1rem;
   border: none;
   border-radius: var(--radius-md);
   background: linear-gradient(135deg, var(--primary), var(--primary-dark));
   color: #000;
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   font-weight: 700;
+  letter-spacing: 0.4px;
   cursor: pointer;
   transition: var(--transition);
-  box-shadow: 0 5px 20px var(--primary-glow);
+  box-shadow: 0 6px 24px var(--primary-glow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+}
+.login-btn:hover,
+.login-btn:focus-visible {
+  transform: translateY(-3px) scale(1.015);
+  box-shadow: 0 12px 36px var(--primary-glow);
+  outline: none;
+}
+.login-btn:active {
+  transform: translateY(-1px);
+}
+.btn-icon {
+  font-size: 1.2rem;
 }
 
-.login-btn:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 30px var(--primary-glow);
-}
-
-/* =================== متن کمکی =================== */
+/* متن کمکی */
 .helper-text {
   margin-top: 1.5rem;
   font-size: 0.85rem;
   color: var(--text-muted);
 }
-
-/* =================== فوتر لوگوها =================== */
-.logos-footer {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 0.8rem;
-  margin-top: 2rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--glass-border);
+.helper-contact {
+  margin-top: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
 }
 
-.logo-card {
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius-md);
-  padding: 0.8rem;
-  text-align: center;
-  transition: var(--transition);
-}
-
-.logo-card:hover {
-  transform: translateY(-3px);
-  border-color: var(--primary);
-  box-shadow: 0 5px 15px var(--primary-glow);
-}
-
-.logo-card img {
-  width: 45px;
-  height: auto;
-  margin-bottom: 0.5rem;
-}
-
-.logo-card span {
-  font-size: 0.75rem;
-  display: block;
-  opacity: 0.8;
-}
-
-/* =================== آب و هوا =================== */
+/* آب و هوا */
 #weather {
   margin-top: 1rem;
   padding: 0.5rem;
@@ -522,7 +499,58 @@ body {
   gap: 0.5rem;
 }
 
-/* =================== دکمه موسیقی =================== */
+/* فوتر لوگوها */
+.logos-footer {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.8rem;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--glass-border);
+}
+.logo-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  padding: 0.8rem;
+  text-align: center;
+  transition: var(--transition);
+}
+.logo-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--primary);
+  box-shadow: 0 5px 15px var(--primary-glow);
+}
+.logo-card img {
+  width: 45px;
+  height: auto;
+  margin-bottom: 0.5rem;
+}
+.logo-card span {
+  font-size: 0.75rem;
+  display: block;
+  opacity: 0.8;
+}
+
+/* لینک‌های مفید */
+.useful-links {
+  margin-top: 1.5rem;
+  text-align: center;
+  font-size: 0.9rem;
+}
+.useful-link {
+  color: var(--primary);
+  text-decoration: none;
+  margin: 0 0.5rem;
+}
+.useful-link:hover {
+  text-decoration: underline;
+}
+.link-separator {
+  color: var(--text-muted);
+}
+
+/* دکمه موسیقی */
 #music-toggle {
   position: fixed;
   bottom: 1.5rem;
@@ -541,13 +569,12 @@ body {
   transition: var(--transition);
   z-index: 100;
 }
-
 #music-toggle:hover {
   transform: scale(1.1) rotate(360deg);
   box-shadow: 0 0 20px var(--primary-glow);
 }
 
-/* =================== نوتیفیکیشن =================== */
+/* نوتیفیکیشن */
 .notification {
   position: fixed;
   bottom: 1.5rem;
@@ -559,47 +586,53 @@ body {
   box-shadow: 0 5px 20px rgba(0,0,0,0.3);
   animation: slideIn 0.3s ease;
 }
-
 .notification.success { background: var(--success); }
 .notification.error { background: var(--error); }
 .notification.info { background: var(--info); }
 .notification.warning { background: var(--warning); }
-
 @keyframes slideIn {
   from { transform: translateX(100%); opacity: 0; }
   to { transform: translateX(0); opacity: 1; }
 }
 
-/* =================== ریسپانسیو =================== */
+/* ریسپانسیو */
 @media (max-width: 1024px) {
   .left { display: none; }
   .right { padding: 1.5rem; }
   .login-box { max-width: 400px; }
   .info-bar { flex-direction: column; gap: 0.5rem; }
 }
-
 @media (max-width: 768px) {
-  .login-box h1 { font-size: 1.8rem; }
+  .login-title { font-size: 1.8rem; }
   .logos-footer { grid-template-columns: repeat(2, 1fr); }
   .options { flex-direction: column; gap: 1rem; align-items: flex-start; }
 }
-
 @media (max-width: 480px) {
   .right { padding: 1rem; }
-  .login-box h1 { font-size: 1.5rem; }
+  .login-title { font-size: 1.5rem; }
   .login-btn { font-size: 1rem; }
   .logo-card img { width: 40px; }
   #music-toggle { bottom: 1rem; left: 1rem; width: 42px; height: 42px; }
 }
 
-/* =================== پشتیبانی RTL =================== */
+/* پشتیبانی RTL */
 [dir="rtl"] .theme-toggle { left: auto; right: 1rem; }
 [dir="rtl"] .toggle-password { left: auto; right: 1rem; }
 [dir="rtl"] .form-group label { right: 1rem; left: auto; }
 [dir="rtl"] #music-toggle { left: auto; right: 1.5rem; }
 [dir="rtl"] .notification { right: auto; left: 1.5rem; }
 
-/* =================== حالت چاپ =================== */
+/* prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* حالت چاپ */
 @media print {
   #particles-canvas, .theme-toggle, #music-toggle, .notification {
     display: none !important;
