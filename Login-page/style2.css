@@ -97,9 +97,9 @@ body.preload * {
     z-index: 1;
 }
 
-/* ===== بخش چپ (برندینگ) - تغییرات اعمال شده ===== */
+/* ===== بخش چپ (برندینگ) - با ارتفاع ثابت و بدون اسکرول ===== */
 .left {
-    flex: 0.9; /* کاهش اندازه کانتینر سمت چپ */
+    flex: 0.9;
     display: flex;
     flex-direction: column;
     padding: 20px;
@@ -109,12 +109,22 @@ body.preload * {
     border: 1px solid var(--glass-border);
     border-radius: var(--border-radius);
     box-shadow: var(--glass-shadow);
-    overflow-y: auto;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
+    height: calc(100vh - 32px); /* ارتفاع ثابت با احتساب padding کانتینر */
+    overflow: hidden; /* مخفی کردن اسکرول */
+    position: relative;
 }
 
-.left::-webkit-scrollbar {
+.left-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow-y: auto; /* اجازه اسکرول به محتوا در صورت نیاز */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding-bottom: 70px; /* فضا برای پلیر */
+}
+
+.left-content::-webkit-scrollbar {
     display: none;
 }
 
@@ -123,7 +133,7 @@ body.preload * {
     aspect-ratio: 1/1;
     border-radius: var(--border-radius-sm);
     overflow: hidden;
-    margin-bottom: 20px; /* افزایش فاصله با متن زیر */
+    margin-bottom: 20px;
     box-shadow: var(--glass-shadow);
     border: 2px solid var(--primary-light);
     flex-shrink: 0;
@@ -144,13 +154,13 @@ body.preload * {
     display: none;
 }
 
-/* ===== محتوای برندینگ - تنظیم برای وسط‌چین ===== */
+/* ===== محتوای برندینگ - وسط‌چین ===== */
 .branding-content {
     flex: 1;
     display: flex;
     flex-direction: column;
-    align-items: center; /* وسط‌چین کردن افقی */
-    text-align: center; /* وسط‌چین کردن متن */
+    align-items: center;
+    text-align: center;
     gap: 12px;
     width: 100%;
 }
@@ -164,7 +174,6 @@ body.preload * {
     background-clip: text;
     color: transparent;
     line-height: 1.3;
-    max-width: 100%;
 }
 
 .project-name {
@@ -172,14 +181,12 @@ body.preload * {
     font-weight: 700;
     color: var(--primary-light);
     margin: 4px 0;
-    max-width: 100%;
 }
 
 .slogan {
     font-size: 0.95rem;
     color: var(--text-secondary);
     margin: 2px 0;
-    max-width: 100%;
 }
 
 .slogan.highlight {
@@ -187,7 +194,6 @@ body.preload * {
     font-weight: 700;
     font-size: 1rem;
     margin: 4px 0;
-    max-width: 100%;
 }
 
 .branding-features {
@@ -195,7 +201,7 @@ body.preload * {
     flex-wrap: wrap;
     gap: 8px;
     margin-top: 8px;
-    justify-content: center; /* وسط‌چین کردن ویژگی‌ها */
+    justify-content: center;
     width: 100%;
 }
 
@@ -217,9 +223,141 @@ body.preload * {
     transform: translateY(-1px);
 }
 
+/* ===== پلیر موسیقی - با سایز اصلی و固定在 پایین ===== */
+.music-player-container {
+    position: absolute;
+    bottom: 15px;
+    left: 20px;
+    right: 20px;
+    width: auto;
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    border-radius: 50px;
+    padding: 6px 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: var(--glass-shadow);
+    z-index: 100;
+    font-size: 0.8rem;
+    height: 55px; /* ارتفاع ثابت */
+}
+
+.music-info-side {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.album-art-wrapper {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.album-art {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.track-details h4 {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    white-space: nowrap;
+}
+
+.track-details p {
+    font-size: 0.6rem;
+    color: var(--text-secondary);
+    white-space: nowrap;
+}
+
+.player-center-section {
+    flex: 1;
+    min-width: 100px;
+}
+
+.wave-header {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+#currentTime,
+#duration {
+    font-size: 0.6rem;
+    color: var(--text-muted);
+    min-width: 30px;
+}
+
+.music-waveform {
+    flex: 1;
+    height: 20px;
+    background: var(--bg-card);
+    border-radius: 10px;
+    position: relative;
+    overflow: hidden;
+}
+
+.music-waveform::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: var(--progress, 0%);
+    background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+    border-radius: 10px;
+    transition: width 0.1s linear;
+}
+
+.player-controls-group {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+}
+
+.main-play-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    border: none;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+    flex-shrink: 0;
+}
+
+.control-sub-btn {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+    flex-shrink: 0;
+}
+
 /* ===== بخش راست (فرم ورود) ===== */
 .right {
-    flex: 1.1; /* افزایش نسبی سمت راست برای تعادل با سمت چپ کوچک‌شده */
+    flex: 1.1;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -521,143 +659,12 @@ input:focus {
     color: var(--primary-light);
 }
 
-/* ===== پلیر موسیقی - تغییر مکان به زیر بخش چپ ===== */
-.music-player-container {
-    position: absolute; /* تغییر از fixed به absolute */
-    bottom: 20px;
-    left: 20px;
-    right: 20px; /* برای تنظیم عرض در کانتینر */
-    width: calc(100% - 40px); /* عرض متناسب با کانتینر */
-    background: var(--glass-bg);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid var(--glass-border);
-    border-radius: 50px;
-    padding: 8px 16px;
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    box-shadow: var(--glass-shadow);
-    z-index: 1000;
-    font-size: 0.85rem;
-}
-
-/* تنظیم موقعیت برای کانتینر چپ که والد پلیر است */
-.left {
-    position: relative; /* برای موقعیت‌دهی مطلق پلیر */
-    padding-bottom: 80px; /* ایجاد فضا برای پلیر در پایین */
-}
-
-.music-info-side {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.album-art-wrapper {
-    width: 35px;
-    height: 35px;
-    border-radius: 50%;
-    overflow: hidden;
-    box-shadow: var(--shadow-sm);
-}
-
-.album-art {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.track-details h4 {
-    font-size: 0.85rem;
-    font-weight: 700;
-    color: var(--text-primary);
-}
-
-.track-details p {
-    font-size: 0.7rem;
-    color: var(--text-secondary);
-}
-
-.player-center-section {
-    min-width: 150px;
-    flex: 1; /* اجازه کشیده شدن به بقیه فضا */
-}
-
-.wave-header {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-#currentTime,
-#duration {
-    font-size: 0.7rem;
-    color: var(--text-muted);
-    min-width: 35px;
-}
-
-.music-waveform {
-    flex: 1;
-    height: 24px;
-    background: var(--bg-card);
-    border-radius: 12px;
-    position: relative;
-    overflow: hidden;
-}
-
-.music-waveform::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: var(--progress, 0%);
-    background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
-    border-radius: 12px;
-    transition: width 0.1s linear;
-}
-
-.player-controls-group {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.main-play-btn {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background: var(--primary-color);
-    border: none;
-    color: white;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: var(--transition);
-}
-
-.control-sub-btn {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    background: var(--bg-card);
-    border: 1px solid var(--border-color);
-    color: var(--text-secondary);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: var(--transition);
-}
-
 /* ===== انیمیشن‌ها ===== */
 @keyframes spin {
     to { transform: rotate(360deg); }
 }
 
-/* ===== مدیا کوئری‌ها - به‌روزرسانی شده ===== */
+/* ===== مدیا کوئری‌ها ===== */
 @media (max-width: 992px) {
     .container {
         padding: 12px;
@@ -669,7 +676,7 @@ input:focus {
     }
     
     .left {
-        flex: 0.8; /* تنظیم بیشتر برای نمایشگرهای متوسط */
+        flex: 0.8;
     }
     
     .right {
@@ -679,7 +686,7 @@ input:focus {
 
 @media (max-width: 768px) {
     .left {
-        display: none; /* مخفی کردن بخش چپ در موبایل */
+        display: none;
     }
     
     .container {
@@ -704,6 +711,8 @@ input:focus {
         border-radius: 30px;
         flex-wrap: wrap;
         justify-content: center;
+        height: auto;
+        min-height: 50px;
     }
 }
 
