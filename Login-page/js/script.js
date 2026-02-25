@@ -1,7 +1,8 @@
 /* =================== پروژه روشنــا - نسخه نهایی فوق پیشرفته =================== */
 // Author: تیم توسعه روشنــا
-// Version: 2.0.0
+// Version: 3.0.0
 // Last Update: 2026
+// Description: نسخه بهبود یافته با رفع مشکلات و اضافه شدن ویژگی‌های جدید
 
 (function() {
   'use strict';
@@ -25,7 +26,9 @@
     music: {
       url: 'naser_chashmazar_barane_eshghe.mp3',
       volume: 0.2,
-      fadeDuration: 1000
+      fadeDuration: 1000,
+      autoPlay: false,
+      retryCount: 3
     },
     api: {
       ip: 'https://api.ipify.org?format=json',
@@ -35,6 +38,11 @@
     validation: {
       minUsername: 3,
       minPassword: 6
+    },
+    ui: {
+      animationSpeed: 'normal',
+      rippleEffect: true,
+      soundEnabled: true
     }
   };
 
@@ -43,6 +51,7 @@
     init() {
       this.loadTheme();
       this.setupToggle();
+      this.setupSystemThemeListener();
     },
 
     loadTheme() {
@@ -57,14 +66,68 @@
       localStorage.setItem('theme', theme);
       
       // بروزرسانی رنگ ذرات
-      if (window.ParticleSystem) {
+      if (window.ParticleSystem && window.ParticleSystem.updateColors) {
         window.ParticleSystem.updateColors();
       }
       
       // بروزرسانی متا تگ برای حالت نمایش
-      document.querySelector('meta[name="theme-color"]')?.setAttribute('content', 
-        theme === 'dark' ? '#0a1118' : '#f0f7fc'
-      );
+      const metaTheme = document.querySelector('meta[name="theme-color"]');
+      if (metaTheme) {
+        metaTheme.setAttribute('content', theme === 'dark' ? '#0a1118' : '#f0f7fc');
+      }
+      
+      // آپدیت آیکون‌های تم
+      this.updateToggleIcons(theme);
+    },
+
+    updateToggleIcons(theme) {
+      const sunIcon = document.querySelector('.icon-sun');
+      const moonIcon = document.querySelector('.icon-moon');
+      if (sunIcon && moonIcon) {
+        if (theme === 'dark') {
+          sunIcon.style.opacity = '1';
+          moonIcon.style.opacity = '0';
+        } else {
+          sunIcon.style.opacity = '0';
+          moonIcon.style.opacity = '1';
+        }
+      }
+    },
+
+    setupToggle() {
+      const toggleBtn = document.getElementById('theme-toggle');
+      if (toggleBtn) {
+        toggleBtn.addEventListener('click', (e) => {
+          if (CONFIG.ui.rippleEffect) {
+            this.createRippleEffect(e);
+          }
+          this.toggle();
+        });
+      }
+    },
+
+    setupSystemThemeListener() {
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+        if (!localStorage.getItem('theme')) {
+          this.setTheme(e.matches ? 'dark' : 'light');
+        }
+      });
+    },
+
+    createRippleEffect(e) {
+      const button = e.currentTarget;
+      const ripple = document.createElement('span');
+      ripple.className = 'ripple';
+      
+      const rect = button.getBoundingClientRect();
+      const size = Math.max(rect.width, rect.height);
+      
+      ripple.style.width = ripple.style.height = `${size}px`;
+      ripple.style.left = `${e.clientX - rect.left - size/2}px`;
+      ripple.style.top = `${e.clientY - rect.top - size/2}px`;
+      
+      button.appendChild(ripple);
+      setTimeout(() => ripple.remove(), 600);
     },
 
     toggle() {
@@ -107,6 +170,7 @@
     lastTime: 0,
     isMobile: false,
     isRunning: true,
+    connectionDistance: 120,
 
     init() {
       this.canvas = document.getElementById('particles-canvas');
@@ -129,6 +193,7 @@
 
     checkMobile() {
       this.isMobile = window.innerWidth < CONFIG.particles.mobileBreakpoint;
+      this.connectionDistance = this.isMobile ? 80 : 120;
     },
 
     setupEventListeners() {
@@ -149,7 +214,7 @@
         const touch = e.touches[0];
         this.mouse.x = touch.clientX;
         this.mouse.y = touch.clientY;
-      });
+      }, { passive: false });
 
       this.canvas.addEventListener('touchend', () => {
         this.mouse.x = null;
@@ -227,16 +292,14 @@
     },
 
     drawConnections() {
-      const maxDistance = this.isMobile ? 80 : 120;
-      
       for (let i = 0; i < this.particles.length; i++) {
         for (let j = i + 1; j < this.particles.length; j++) {
           const dx = this.particles[i].x - this.particles[j].x;
           const dy = this.particles[i].y - this.particles[j].y;
           const distance = Math.hypot(dx, dy);
           
-          if (distance < maxDistance) {
-            const opacity = (1 - distance / maxDistance) * 0.25;
+          if (distance < this.connectionDistance) {
+            const opacity = (1 - distance / this.connectionDistance) * 0.25;
             this.ctx.beginPath();
             this.ctx.strokeStyle = `rgba(0, 212, 255, ${opacity})`;
             this.ctx.lineWidth = 0.8;
@@ -319,7 +382,7 @@
           this.glow = Math.max(0.3, this.glow - 0.01);
         }
       }
-    }
+    },
 
     draw(ctx) {
       ctx.shadowColor = this.baseColor;
@@ -335,6 +398,7 @@
   const NotificationManager = {
     container: null,
     activeNotifications: [],
+    maxNotifications: 3,
 
     init() {
       this.createContainer();
@@ -357,6 +421,14 @@
     },
 
     show(message, type = 'info', duration = CONFIG.notifications.duration) {
+      // حذف نوتیفیکیشن‌های اضافی
+      while (this.activeNotifications.length >= this.maxNotifications) {
+        const oldest = this.activeNotifications.shift();
+        if (oldest && oldest.parentNode) {
+          this.close(oldest);
+        }
+      }
+
       const colors = {
         success: 'linear-gradient(135deg, #4CAF50, #45a049)',
         error: 'linear-gradient(135deg, #f44336, #d32f2f)',
@@ -401,7 +473,10 @@
 
       // دکمه بستن
       const closeBtn = notification.querySelector('button');
-      closeBtn.addEventListener('click', () => this.close(notification));
+      closeBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.close(notification);
+      });
 
       this.container.appendChild(notification);
       this.activeNotifications.push(notification);
@@ -436,6 +511,10 @@
     persianMonths: ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور', 'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'],
 
     init() {
+      if (!this.elements.datetime) {
+        console.warn('المان datetime یافت نشد');
+        return;
+      }
       this.update();
       setInterval(() => this.update(), 1000);
     },
@@ -467,9 +546,11 @@
       });
 
       this.elements.datetime.innerHTML = `
-        <span style="display:block; font-size:1.1em;">${weekday}</span>
-        <span style="display:block; font-size:0.9em; opacity:0.8;">${dateStr}</span>
-        <span style="display:block; font-size:1.2em; color:var(--primary);">${timeStr}</span>
+        <div style="display:flex; flex-direction:column; gap:2px;">
+          <span style="font-size:1.1em; font-weight:bold;">${weekday}</span>
+          <span style="font-size:0.9em; opacity:0.8;">${dateStr}</span>
+          <span style="font-size:1.2em; color:var(--primary); font-weight:bold;">${timeStr}</span>
+        </div>
       `;
     },
 
@@ -480,16 +561,24 @@
 
       const nowruz2026 = new Date(2026, 2, 20, 0, 30, 0); // ۲۰ مارس ۲۰۲۶
       const diff = nowruz2026 - now;
+      
+      if (diff <= 0) return;
+      
       const days = Math.floor(diff / (1000 * 60 * 60 * 24));
       const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
       const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
 
-      if (days > 0 && days < 60) {
-        this.elements.countdown.innerHTML = `
-          🎉 ${this.toPersianNumber(days)} روز 
-          ${hours > 0 ? `و ${this.toPersianNumber(hours)} ساعت` : ''}
-          تا نوروز ۱۴۰۵
-        `;
+      if (days < 60) {
+        let countdownText = `🎉 ${this.toPersianNumber(days)} روز`;
+        if (hours > 0) {
+          countdownText += ` و ${this.toPersianNumber(hours)} ساعت`;
+        }
+        if (days < 30 && minutes > 0 && hours === 0) {
+          countdownText += ` و ${this.toPersianNumber(minutes)} دقیقه`;
+        }
+        countdownText += ' تا نوروز ۱۴۰۵';
+        
+        this.elements.countdown.innerHTML = countdownText;
         this.elements.countdown.style.display = 'block';
       } else {
         this.elements.countdown.style.display = 'none';
@@ -497,6 +586,9 @@
     },
 
     createCountdownElement() {
+      const infoBar = document.querySelector('.info-bar');
+      if (!infoBar) return;
+      
       this.elements.countdown = document.createElement('div');
       this.elements.countdown.id = 'nowruz-countdown';
       this.elements.countdown.style.cssText = `
@@ -508,8 +600,10 @@
         padding: 6px 12px;
         border-radius: 20px;
         display: inline-block;
+        width: 100%;
+        text-align: center;
       `;
-      document.querySelector('.info-bar')?.appendChild(this.elements.countdown);
+      infoBar.appendChild(this.elements.countdown);
     },
 
     toPersianNumber(num) {
@@ -522,8 +616,20 @@
   const IPWeatherManager = {
     ipEl: document.getElementById('user-ip'),
     weatherEl: document.getElementById('weather'),
+    retryCount: 0,
+    maxRetries: 3,
 
     async init() {
+      if (!this.ipEl) {
+        console.warn('المان user-ip یافت نشد');
+        return;
+      }
+      
+      this.ipEl.textContent = 'در حال دریافت...';
+      if (this.weatherEl) {
+        this.weatherEl.innerHTML = '🔄 در حال دریافت اطلاعات...';
+      }
+      
       await this.fetchIPAndWeather();
     },
 
@@ -531,48 +637,77 @@
       try {
         // دریافت IP
         const ip = await this.fetchIP();
-        this.ipEl.textContent = ip;
+        this.ipEl.innerHTML = `
+          <div style="display:flex; align-items:center; gap:4px;">
+            <span>🌐</span>
+            <span>${ip}</span>
+          </div>
+        `;
         
         // دریافت موقعیت
         const geo = await this.fetchGeo(ip);
         
         // دریافت آب و هوا
-        await this.fetchWeather(geo.latitude, geo.longitude);
+        if (geo.latitude && geo.longitude) {
+          await this.fetchWeather(geo.latitude, geo.longitude, geo);
+        } else {
+          this.showWeatherError();
+        }
         
         NotificationManager.show('📍 موقعیت شما شناسایی شد', 'success');
       } catch (error) {
         console.error('خطا در دریافت اطلاعات:', error);
-        this.ipEl.textContent = 'خطا در دریافت IP';
-        this.showWeatherError();
+        this.handleError();
       }
     },
 
     async fetchIP() {
-      const response = await fetch(CONFIG.api.ip);
-      const data = await response.json();
-      return data.ip;
-    },
-
-    async fetchGeo(ip) {
-      const url = CONFIG.api.geo.replace('{ip}', ip);
-      const response = await fetch(url);
-      return await response.json();
-    },
-
-    async fetchWeather(lat, lon) {
-      const url = CONFIG.api.weather
-        .replace('{lat}', lat)
-        .replace('{lon}', lon);
-      
-      const response = await fetch(url);
-      const data = await response.json();
-
-      if (data.current) {
-        this.displayWeather(data.current);
+      try {
+        const response = await fetch(CONFIG.api.ip);
+        const data = await response.json();
+        return data.ip;
+      } catch (error) {
+        // روش دوم
+        const response = await fetch('https://jsonip.com');
+        const data = await response.json();
+        return data.ip;
       }
     },
 
-    displayWeather(current) {
+    async fetchGeo(ip) {
+      try {
+        const url = CONFIG.api.geo.replace('{ip}', ip);
+        const response = await fetch(url);
+        return await response.json();
+      } catch (error) {
+        console.warn('خطا در دریافت موقعیت:', error);
+        return {};
+      }
+    },
+
+    async fetchWeather(lat, lon, geo) {
+      if (!this.weatherEl) return;
+
+      try {
+        const url = CONFIG.api.weather
+          .replace('{lat}', lat)
+          .replace('{lon}', lon);
+        
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (data.current) {
+          this.displayWeather(data.current, geo);
+        } else {
+          this.showWeatherError();
+        }
+      } catch (error) {
+        console.error('خطا در دریافت آب و هوا:', error);
+        this.showWeatherError();
+      }
+    },
+
+    displayWeather(current, geo) {
       const temp = Math.round(current.temperature_2m);
       const feel = Math.round(current.apparent_temperature);
       const humidity = current.relative_humidity_2m;
@@ -585,13 +720,15 @@
       };
       
       const emoji = weatherCodes[current.weather_code] || '🌡️';
+      const city = geo.city || geo.region || '';
 
       this.weatherEl.innerHTML = `
-        <div style="display:flex; align-items:center; gap:12px; justify-content:center; flex-wrap:wrap;">
-          <span style="font-size:1.8em;">${emoji}</span>
-          <div>
-            <div style="font-size:1.2em; font-weight:bold;">${temp}°C</div>
+        <div style="display:flex; align-items:center; gap:12px; justify-content:center; flex-wrap:wrap; padding:8px;">
+          <span style="font-size:2em;">${emoji}</span>
+          <div style="text-align:center;">
+            <div style="font-size:1.5em; font-weight:bold; color:var(--primary);">${temp}°C</div>
             <div style="font-size:0.8em; opacity:0.8;">احساس ${feel}°C</div>
+            ${city ? `<div style="font-size:0.8em;">${city}</div>` : ''}
           </div>
           <div style="border-right:1px solid rgba(255,255,255,0.2); padding-right:12px;">
             <div>💧 ${humidity}%</div>
@@ -603,7 +740,22 @@
 
     showWeatherError() {
       if (this.weatherEl) {
-        this.weatherEl.innerHTML = '🌡️ آب و هوا: موقتاً در دسترس نیست';
+        this.weatherEl.innerHTML = `
+          <div style="padding:8px; text-align:center; opacity:0.8;">
+            🌡️ اطلاعات آب و هوا موقتاً در دسترس نیست
+          </div>
+        `;
+      }
+    },
+
+    handleError() {
+      if (this.retryCount < this.maxRetries) {
+        this.retryCount++;
+        setTimeout(() => this.fetchIPAndWeather(), 2000 * this.retryCount);
+      } else {
+        this.ipEl.textContent = 'خطا در دریافت IP';
+        this.showWeatherError();
+        NotificationManager.show('⚠️ خطا در دریافت اطلاعات', 'error');
       }
     }
   };
@@ -653,7 +805,9 @@
 
       // Enter key
       document.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
+        if (e.key === 'Enter' && 
+            document.activeElement === this.elements.username || 
+            document.activeElement === this.elements.password) {
           e.preventDefault();
           this.handleLogin();
         }
@@ -709,18 +863,23 @@
 
     simulateLogin(username, password) {
       // نمایش لودینگ
+      const originalText = this.elements.loginBtn.innerHTML;
       this.elements.loginBtn.innerHTML = '<span class="loading"></span> در حال ورود...';
       this.elements.loginBtn.disabled = true;
 
       setTimeout(() => {
         // Reset button
-        this.elements.loginBtn.innerHTML = 'ورود به میدان';
+        this.elements.loginBtn.innerHTML = originalText;
         this.elements.loginBtn.disabled = false;
 
         // Check credentials
         if (username === 'admin' && password === '123456') {
           NotificationManager.show('✅ خوش آمدید! ورود موفق', 'success');
           this.celebrateLogin();
+          
+          // پاک کردن فرم
+          this.elements.username.value = '';
+          this.elements.password.value = '';
         } else {
           NotificationManager.show('❌ نام کاربری یا رمز عبور اشتباه است', 'error');
           this.elements.password.value = '';
@@ -762,16 +921,7 @@
             ctx.shadowBlur = 20;
             ctx.fillStyle = particle.color;
             ctx.beginPath();
-            ctx.arc(particle.x, particlePath();
-            ctx.arc(particle.x, particle.y, particle.size.y, particle.size, 0,, 0, Math.PI * 2);
-            ctx.fill();
-          }
-        }, i * 50);
-      }
-    }
-  };
-
- Math.PI * 2);
+            ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
             ctx.fill();
           }
         }, i * 50);
@@ -783,22 +933,10 @@
   const MusicManager = {
     audio: null,
     button: null,
-    is  /* =================== ۹. مدیریت موسیقی =================== */
-  const MusicManager = {
-    audio: null,
-    button: null,
-    isPlaying:Playing: false,
- false,
+    isPlaying: false,
     fadeInterval: null,
-
-       fadeInterval: null init() {
-      this.createButton();
-      this.setupAudio();
-    },
-
-    setupAudio() {
-      this.audio = new Audio(CONFIG.music.url);
-      this.audio,
+    retryCount: 0,
+    maxRetries: 3,
 
     init() {
       this.createButton();
@@ -806,71 +944,94 @@
     },
 
     setupAudio() {
-      this.audio = new Audio(CONFIG.music.url);
-      this.audio.loop = true;
-     .loop = true;
-      this.audio.volume = 0;
+      try {
+        this.audio = new Audio(CONFIG.music.url);
+        this.audio.loop = true;
+        this.audio.volume = 0;
+        this.audio.preload = 'auto';
 
-      // Load metadata
-      this.audio.volume = 0;
+        this.audio.addEventListener('canplaythrough', () => {
+          console.log('✅ موسیقی آماده پخش است');
+          this.button.style.opacity = '1';
+          this.button.style.cursor = 'pointer';
+        });
 
-      // Load metadata
-      this. this.audio.addEventListener('loadedaudio.addEventListener('loadedmetadatametadata', () => {
-        console.log('', () => {
-        console.log('🎵 موسیقی بارگذاری شد');
-      });
+        this.audio.addEventListener('error', (e) => {
+          console.error('❌ خطا در بارگذاری موسیقی:', e);
+          this.handleError();
+        });
 
-      this.audio.addEventListener('error', () =>🎵 موسیقی بارگذاری شد');
-      });
+        this.audio.addEventListener('waiting', () => {
+          console.log('⏳ در حال بافرینگ...');
+        });
 
-      this.audio.addEventListener('error', () => {
-        console.error('❌ خطا در پخش موسیقی');
-        this.button.style {
-        console.error('❌ خطا در پخش موسیقی');
-        this.button.style.opacity = '0.5';
-      });
+      } catch (error) {
+        console.error('❌ خطا در ایجاد Audio object:', error);
+        this.handleError();
+      }
     },
 
-.opacity = '0.5';
-      });
+    handleError() {
+      this.retryCount++;
+      this.button.style.opacity = '0.5';
+      this.button.title = 'خطا در پخش موسیقی';
+      
+      if (this.retryCount < this.maxRetries) {
+        setTimeout(() => this.setupAudio(), 2000);
+      }
     },
 
     createButton() {
-      this.button = document    createButton() {
-      this.button = document.getElementById('.getElementById('music-toggle');
-      
-      if (!this.button) {
-        this.button =music-toggle');
+      this.button = document.getElementById('music-toggle');
       
       if (!this.button) {
         this.button = document.createElement('button');
-        this.button document.createElement('button');
-        this.button.id =.id = 'music 'music-toggle';
-        document.body.appendChild-toggle';
-        document.body.appendChild(this.button(this.button);
+        this.button.id = 'music-toggle';
+        document.body.appendChild(this.button);
       }
 
-     );
-      }
+      this.button.innerHTML = '🎵';
+      this.button.setAttribute('aria-label', 'پخش/توقف موسیقی');
+      this.button.style.cssText = `
+        position: fixed;
+        bottom: 24px;
+        left: 24px;
+        width: 58px;
+        height: 58px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #00d4ff, #0099cc);
+        color: white;
+        font-size: 26px;
+        cursor: pointer;
+        z-index: 1000;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+      `;
 
-      this.button this.button.innerHTML =.innerHTML = '🎵';
-      this.button.setAttribute('aria-label', 'پخش '🎵';
-      this.button.setAttribute('aria-label', 'پخش/توقف مو/توقف موسیقی');
-      
-      this.button.addEventListener('clickسیقی');
-      
       this.button.addEventListener('click', () => this.toggle());
+      
+      // اضافه کردن hover effect
+      this.button.addEventListener('mouseenter', () => {
+        this.button.style.transform = 'scale(1.1)';
+      });
+      
+      this.button.addEventListener('mouseleave', () => {
+        this.button.style.transform = 'scale(1)';
+      });
     },
 
     toggle() {
-      if (this.isPlaying) {
-        this.p', () => this.toggle());
-    },
+      if (!this.audio) {
+        NotificationManager.show('🔇 خطا در پخش موسیقی', 'error');
+        return;
+      }
 
-    toggle() {
       if (this.isPlaying) {
         this.pause();
-ause();
       } else {
         this.play();
       }
@@ -878,95 +1039,57 @@ ause();
 
     async play() {
       try {
-        await this.audio.play();
-        this.isPlaying = true;
-        this      } else {
-        this.play();
-      }
-    },
-
-    async play() {
-      try {
-        await this.audio.play();
-        this.isPlaying = true;
-        this.button.innerHTML = '🔊';
+        // تلاش برای پخش
+        const playPromise = this.audio.play();
         
-        // fade in
-        let vol = 0;
-        this.fadeInterval = setInterval(() => {
-         .button.innerHTML = '🔊';
-        
-        // fade in
-        let vol = 0;
-        this.fadeInterval = setInterval(() => {
-          vol vol += 0 += 0.02.02;
-         ;
-          if (vol >= if (vol >= CONFIG.music CONFIG.music.volume.volume) {
-            this) {
-            this.audio.audio.volume.volume = CONFIG.music.volume;
-            clear = CONFIG.music.volume;
-            clearInterval(thisInterval(this.fadeInterval);
-          } else {
-            this.audio.volume = vol;
-          }
-        }, 50);
+        if (playPromise !== undefined) {
+          playPromise
+            .then(() => {
+              this.isPlaying = true;
+              this.button.innerHTML = '🔊';
+              
+              // fade in
+              let vol = 0;
+              this.fadeInterval = setInterval(() => {
+                vol += 0.02;
+                if (vol >= CONFIG.music.volume) {
+                  this.audio.volume = CONFIG.music.volume;
+                  clearInterval(this.fadeInterval);
+                } else {
+                  this.audio.volume = vol;
+                }
+              }, 50);
 
-        Notification.fadeInterval);
-          } else {
-            this.audio.volume = vol;
-          }
-        }, 50);
-
-        NotificationManager.showManager.show('🎶 موسیقی روش('🎶 موسیقی روشن شد', 'info');
+              NotificationManager.show('🎶 موسیقی روشن شد', 'success');
+            })
+            .catch(error => {
+              console.error('خطا در پخش:', error);
+              NotificationManager.show('🔇 برای پخش موسیقی کلیک کنید', 'warning');
+              this.button.innerHTML = '🎵';
+            });
+        }
       } catch (error) {
-        NotificationManager.show('🔇 برای پخش موسیقی کلیک کنید', 'warning');
-        console.error('خطای پخش:', error);
-      }
-    },
-
-    pause() {
-     ن شد', 'info');
-      } catch (error) {
-        NotificationManager.show('🔇 برای پخش موسیقی کلیک کنید', 'warning');
-        console.error('خطای پخش:', error);
+        console.error('❌ خطا:', error);
+        NotificationManager.show('🔇 خطا در پخش موسیقی', 'error');
       }
     },
 
     pause() {
       // fade out
-      clearInterval // fade out
-      clearInterval(this.f(this.fadeInterval);
-      const startVol =adeInterval);
+      clearInterval(this.fadeInterval);
       const startVol = this.audio.volume;
-      const this.audio.volume;
-      const steps steps = 20;
+      const steps = 20;
       let step = 0;
       
-      = 20;
-      let step = 0;
-      
-      const fade const fadeOutOut = set = setInterval(() => {
+      const fadeOut = setInterval(() => {
         step++;
         this.audio.volume = startVol * (1 - step / steps);
-Interval(() => {
-        step++;
-        this.audio.volume = startVol * (1 - step / steps);
-        
-        if (step >= steps) {
-          this.audio.pause();
-          this.audio.volume = 0;
         
         if (step >= steps) {
           this.audio.pause();
           this.audio.volume = 0;
           this.isPlaying = false;
-          this          this.isPlaying = false;
-          this.button.innerHTML =.button.innerHTML = '🎵';
-          clearInterval(fadeOut);
-        }
-      }, 30);
-
- '🎵';
+          this.button.innerHTML = '🎵';
           clearInterval(fadeOut);
         }
       }, 30);
@@ -975,169 +1098,99 @@ Interval(() => {
     }
   };
 
-  /* ===================      NotificationManager.show('🔇 موسیقی متوقف شد', 'info');
-    }
-  };
-
-  /* =================== ۱۰ ۱۰. مدیریت امنیت =================== */
-  const. مدیریت امنیت =================== */
+  /* =================== ۱۰. مدیریت امنیت =================== */
   const SecurityManager = {
-    init() {
-      this.prevent SecurityManager = {
     init() {
       this.preventRightClick();
       this.preventCopyPassword();
       this.preventInspect();
-    },
-
-    preventRightClick() {
-      document.addEventListener('contextmenu', (e) => {
-RightClick();
-      this.preventCopyPassword();
-      this.preventInspect();
+      this.preventSelection();
     },
 
     preventRightClick() {
       document.addEventListener('contextmenu', (e) => {
         const target = e.target;
-        if (target.tagName !== 'INPUT' && target.tagName        const target = e.target;
-        if (target.tagName !== 'INPUT' && target !== 'TEXTAREA') {
-          e.preventDefault();
-       .tagName !== 'TEXTAREA') {
+        if (target.tagName !== 'INPUT' && target.tagName !== 'TEXTAREA') {
           e.preventDefault();
         }
-      });
-    },
-
-    }
       });
     },
 
     preventCopyPassword() {
       const passwordInput = document.getElementById('password');
-      if ( preventCopyPassword() {
-      const passwordInput = document.getElementById('password');
       if (passwordInput) {
-        passwordpasswordInput) {
-        passwordInput.addEventListener('copyInput.addEventListener('copy', (e) => e.preventDefault());
-        passwordInput.addEventListener('cut', (e)', (e) => e.preventDefault());
-        passwordInput.addEventListener('cut', (e) => e => e.preventDefault());
-      }
-.preventDefault());
+        passwordInput.addEventListener('copy', (e) => e.preventDefault());
+        passwordInput.addEventListener('cut', (e) => e.preventDefault());
+        passwordInput.addEventListener('paste', (e) => e.preventDefault());
       }
     },
 
-       },
-
     preventInspect() {
-      // جلوگیری از باز کردن developer preventInspect() {
-      // جلوگیری از باز کردن developer tools ( tools (اختیاری)
-اختیاری)
       document.addEventListener('keydown', (e) => {
-        if (e.key === 'F12      document.addEventListener('keydown', (e) => {
         if (e.key === 'F12' || 
-' || 
-            (e.            (e.ctrlKey && e.shiftctrlKey && e.shiftKey &&Key && e.key === 'I') ||
             (e.ctrlKey && e.shiftKey && e.key === 'I') ||
-            (e.ctrlKey && e.shiftKey && e.key === ' e.keyJ') ||
-            === 'J') ||
-            (e.ctrlKey && (e.ctrlKey && e.key === 'U')) {
+            (e.ctrlKey && e.shiftKey && e.key === 'J') ||
+            (e.ctrlKey && e.key === 'U')) {
+          e.preventDefault();
+        }
+      });
+    },
+
+    preventSelection() {
+      document.addEventListener('selectstart', (e) => {
+        if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
           e.preventDefault();
         }
       });
     }
   };
 
-  /* =================== ۱۱. انیمیشن‌های e.key === 'U')) {
-          e.preventDefault();
-        }
-      });
-    }
-  };
-
-  /* =================== ۱۱. انیمیشن‌های CSS =================== CSS =================== */
-  */
-  function addAnimations() function addAnimations() {
-    const style {
+  /* =================== ۱۱. انیمیشن‌های CSS =================== */
+  function addAnimations() {
     const style = document.createElement('style');
- = document    style.textContent = `
-      @.createElement('style');
     style.textContent = `
-      @keyframes slideInkeyframes slideIn {
-        from { {
-        from { transform: translateX(120%) translate transform: translateX(120%) translateY(Y(20px20px); opacity: 0; }
-        to {); opacity: 0; }
-        to { transform: translateX(0) translateY(0 transform: translateX(0) translateY(0);); opacity: 1; }
-      }
-
-      @keyframes opacity: 1; }
+      @keyframes slideIn {
+        from { transform: translateX(120%) translateY(20px); opacity: 0; }
+        to { transform: translateX(0) translateY(0); opacity: 1; }
       }
 
       @keyframes slideOut {
-        from { transform: slideOut {
         from { transform: translateX(0) translateY(0); opacity: 1; }
-        to { transform: translate translateX(0) translateY(0); opacity: 1; }
-        to { transform: translateX(120%) translateY(20px);X(120%) translateY(20px); opacity: opacity: 0; }
+        to { transform: translateX(120%) translateY(20px); opacity: 0; }
       }
 
       @keyframes fadeOut {
-        0; }
-      }
-
-      @keyframes fadeOut {
-        from { opacity: 0 from { opacity: 0.3.3;; }
-        to { opacity }
+        from { opacity: 0.3; }
         to { opacity: 0; }
-     : 0; }
       }
 
-      }
-
-      @key @keyframes pulse {
-        frames pulse {
-        0%0% { transform: scale(1); opacity:  { transform: scale(1); opacity: 0.0.6; }
-        50%6; }
+      @keyframes pulse {
+        0% { transform: scale(1); opacity: 0.6; }
         50% { transform: scale(1.05); opacity: 1; }
-        100% { transform: scale(1.05); opacity: 1; }
-        100% { transform: scale(1); opacity: 0. { transform: scale(1); opacity: 0.6;6; }
+        100% { transform: scale(1); opacity: 0.6; }
       }
 
-      .loading {
-        display: inline-block }
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+
+      @keyframes ripple {
+        to { transform: scale(4); opacity: 0; }
       }
 
       .loading {
         display: inline-block;
         width: 20px;
-        height: ;
-        width: 20px;
-        height: 20px20px;
-        border:;
-        border: 3px 3px solid rgba(255,255,255,. solid rgba(255,255,255,.3);
+        height: 20px;
+        border: 3px solid rgba(255,255,255,.3);
         border-radius: 50%;
         border-top-color: white;
-        animation:3);
-        border-radius: 50%;
-        border-top-color: white;
-        animation: spin  spin 1s1s ease-in ease-in-out infinite;
-        margin-left: 8px-out infinite;
+        animation: spin 1s ease-in-out infinite;
         margin-left: 8px;
       }
 
-      @keyframes spin;
-      }
-
-      @keyframes spin {
-        to { {
-        to { transform: transform: rotate(360deg rotate(360deg); }
-); }
-      }
-
       #music-toggle {
-             }
-
-      #music-toggle {
-        transition: transition: all 0.3s all 0.3s cubic-b cubic-bezier(0.68ezier(0.68, -0.55, 0.265, 1.55);
+        transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
       }
 
       #music-toggle:hover {
@@ -1145,33 +1198,48 @@ RightClick();
       }
 
       .notification {
-       , -0.55, 0.265, 1.55);
-      }
-
-      #music-toggle:hover {
-        transform: scale(1.2) rotate(360deg);
-      }
-
-      .notification {
-        transition: transition: all 0.3s ease;
+        transition: all 0.3s ease;
       }
 
       .notification button {
-        transition: opacity 0.3s ease;
+        transition: opacity 0.3s ease, transform 0.3s ease;
       }
 
       .notification button:hover {
         opacity: 1 !important;
-        transform: scale(1 all 0.3s ease;
+        transform: scale(1.2);
       }
 
-      .notification button {
-        transition: opacity 0.3s ease;
+      .ripple {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.6);
+        transform: scale(0);
+        animation: ripple 0.6s ease-out;
+        pointer-events: none;
       }
 
-      .notification button:hover {
-        opacity: 1 !important;
-        transform: scale(1.2.2);
+      #datetime, #user-ip, #weather {
+        transition: all 0.3s ease;
+      }
+
+      .info-bar {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+      }
+
+      .datetime-display, .ip-display {
+        flex: 1;
+        min-width: 200px;
+        padding: 10px 15px;
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: 30px;
+        backdrop-filter: blur(10px);
+        text-align: center;
+        font-size: 0.9rem;
       }
     `;
     document.head.appendChild(style);
@@ -1179,115 +1247,80 @@ RightClick();
 
   /* =================== ۱۲. نمایش اطلاعات در کنسول =================== */
   function showConsoleInfo() {
-    console.log('%c🚀 پروژه روشنــا - نسخه نهایی ۲.۰', 
-      'color: #00e0ff; font-size: 16px; font-weight: bold; padding: 5px;');
-    console.log('%c📅 تاریخ: ' + new Date().toLocaleString('fa-IR'),
-      'color: #4CAF50; font-size: 14px;');
-    console.log('%c🌙 تم فعلی: ' + document);
+    console.log('%c┌─────────────────────────────────────┐', 'color: #00e0ff');
+    console.log('%c│    🚀 پروژه روشنــا - نسخه ۳.۰     │', 'color: #00e0ff; font-size: 14px; font-weight: bold;');
+    console.log('%c├─────────────────────────────────────┤', 'color: #00e0ff');
+    console.log('%c│  📅 تاریخ: ' + new Date().toLocaleString('fa-IR'), 'color: #4CAF50');
+    console.log('%c│  🌙 تم فعلی: ' + document.body.getAttribute('data-theme'), 'color: #FFC107');
+    console.log('%c│  🎵 موسیقی: باران عشق - ناصر چشم‌آذر', 'color: #ff2d88');
+    console.log('%c│  ✨ تمام ویژگی‌ها فعال شدند', 'color: #00e0ff');
+    console.log('%c└─────────────────────────────────────┘', 'color: #00e0ff');
+  }
+
+  /* =================== ۱۳. بررسی وجود المنت‌ها =================== */
+  function checkRequiredElements() {
+    const required = ['datetime', 'user-ip', 'username', 'password'];
+    const missing = [];
+    
+    required.forEach(id => {
+      if (!document.getElementById(id)) {
+        missing.push(id);
       }
-    `;
-    document.head.appendChild(style);
+    });
+    
+    if (missing.length > 0) {
+      console.warn('⚠️ المنت‌های زیر یافت نشدند:', missing.join(', '));
+    }
+    
+    return missing.length === 0;
   }
 
-  /* =================== ۱۲. نمایش اطلاعات در کنسول =================== */
-  function showConsoleInfo() {
-    console.log('%c🚀 پروژه روشنــا - نسخه نهایی ۲.۰', 
-      'color: #00e0ff; font-size: 16px; font-weight: bold; padding: 5px;');
-    console.log('%c📅 تاریخ: ' + new Date().toLocaleString('fa-IR'),
-      'color: #4CAF50; font-size: 14px;');
-    console.log('%c🌙 تم فعلی: ' + document.body.getAttribute('data-theme'),
-      'color: #FFC107; font-size: 14px;');
-    console.log('%c🎵 موسیقی: باران عشق - ناصر چشم‌آذر',
-      'color: #ff2d88; font-size: 14px;');
-    console.log('%c✨ تمام ویژگی‌ها فعال شدند',
-      '.body.getAttribute('data-theme'),
-      'color: #FFC107; font-size: 14px;');
-    console.log('%c🎵 موسیقی: باران عشق - ناصر چشم‌آذر',
-      'color: #ff2d88; font-size: 14px;');
-    console.log('%c✨ تمام ویژگی‌ها فعال شدند',
-      'color:color: #00e0ff; font-size: 14px; #00e0ff; font-size: 14 font-stylepx; font-style: italic: italic;');
-  }
-
-  /* =================;');
-  }
-
-  /* =================== ۱۳. مقداردهی اول== ۱۳. مقداردهی اولیه =================== */
-  function init() {
-یه =================== */
+  /* =================== ۱۴. مقداردهی اولیه =================== */
   function init() {
     console.time('روشنــا');
+    console.log('🚀 در حال راه‌اندازی پروژه روشنــا...');
 
-    // اضافه    console.time('روشنــا');
-
-    // اضافه کردن ان کردن انیمیشنیمیشن‌های CSS
-    addAnimations‌های CSS
+    // اضافه کردن انیمیشن‌های CSS
     addAnimations();
 
-    // مقداردهی ماژول();
+    // بررسی المنت‌های مورد نیاز
+    checkRequiredElements();
 
-    // مقداردهی ماژول‌ها‌ها
-   
+    // مقداردهی ماژول‌ها
     ThemeManager.init();
-    Particle ThemeManager.init();
     ParticleSystem.init();
-    DateTimeManagerSystem.init();
     DateTimeManager.init();
-    NotificationManager.init();
-    FormManager.init();
-.init();
     NotificationManager.init();
     FormManager.init();
     MusicManager.init();
     SecurityManager.init();
 
-    // دریافت IP    MusicManager.init();
-    SecurityManager.init();
-
-    // دریافت IP و آب و هوا
-    IPWeatherManager.init();
-
-    // نمایش اطلاعات
-    showConsoleInfo و آب و هوا
-    IPWeatherManager.init();
+    // دریافت IP و آب و هوا با تاخیر
+    setTimeout(() => {
+      IPWeatherManager.init();
+    }, 500);
 
     // نمایش اطلاعات
     showConsoleInfo();
 
-   ();
-
     console.timeEnd('روشنــا');
-  console.timeEnd('روشنــا }
-
-  // شروع برنامه پس از بارگذاری کامل صفحه
-  if (document.readyState');
   }
 
   // شروع برنامه پس از بارگذاری کامل صفحه
-  if (document.readyState === === 'loading') {
-    'loading') {
-    document.addEventListener('DOM document.addEventListener('DOMContentLoadedContentLoaded', init);
-  } else', init);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
   } else {
-    {
     init();
   }
 
-  // ذ init();
-  }
-
-  // ذخیرهخیره در global در global برای دست برای دسترسی از کنسرسی از کنسول
-  window.Rooshanول
+  // ذخیره در global برای دسترسی از کنسول
   window.Rooshan = {
     theme: ThemeManager,
     particles: ParticleSystem,
-    notifications = {
-    theme: ThemeManager,
-    particles: ParticleSystem,
     notifications: NotificationManager,
-    music: NotificationManager,
-    music: Music: MusicManager,
-    version: '2.Manager,
-    version: '2.0.0'
+    music: MusicManager,
+    version: '3.0.0',
+    config: CONFIG
   };
 
 })();
