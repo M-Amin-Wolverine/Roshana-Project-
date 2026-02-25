@@ -23,7 +23,7 @@
       animationDuration: 400
     },
     music: {
-      url: 'assets/audio/naser_chashmazar_barane_eshghe.mp3', // مسیر پیشنهادی بهتر
+      url: 'https://dl.musicdel.ir/Music/1400/05/naser_chashmazar_barane_eshghe.mp3', // مسیر پیشنهادی بهتر
       volume: 0.18,
       fadeDuration: 1200,
       autoPlay: false,
