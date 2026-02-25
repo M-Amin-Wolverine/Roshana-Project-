@@ -92,7 +92,7 @@ body::before {
 
 .branding-logo {
   font-family: 'Tajawal', sans-serif;
-  font-size: 2.5rem;
+  font-size: 2rem;              /* کوچکتر شد */
   font-weight: 900;
   background: linear-gradient(90deg, var(--primary), #fff, var(--primary));
   -webkit-background-clip: text;
@@ -100,18 +100,19 @@ body::before {
   color: transparent;
   margin-bottom: 0.6rem;
   text-shadow: 0 0 25px var(--neon-glow);
+  opacity: 0.85;                /* کمی کم‌رنگ‌تر برای تعادل */
 }
 
 .project-name {
-  font-size: 2rem;
+  font-size: 1.8rem;
   color: var(--primary);
   margin-bottom: 1rem;
 }
 
 .slogan {
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   line-height: 1.6;
-  opacity: 0.95;
+  opacity: 0.9;
   text-shadow: 0 0 12px rgba(0,0,0,0.6);
 }
 
@@ -217,12 +218,12 @@ body::before {
   text-align: center;
 }
 
-/* لوگوهای پایین صفحه در کارت مربعی */
+/* لوگوهای پایین */
 .logos-footer {
   display: flex;
   justify-content: center;
   gap: 2rem;
-  margin-top: auto; /* می‌چسبد به پایین */
+  margin-top: auto;
   padding-top: 2rem;
 }
 
@@ -244,9 +245,10 @@ body::before {
 }
 
 .logo-card span {
-  font-size: 0.9rem;
+  font-size: 0.75rem;           /* کوچکتر شد */
   color: var(--text-light);
   display: block;
+  opacity: 0.8;                 /* کم‌رنگ‌تر */
 }
 
 /* Responsive */
@@ -271,6 +273,7 @@ body::before {
 @media (max-width: 480px) {
   .logo-card { width: 100px; }
   .logo-card img { width: 60px; }
+  .logo-card span { font-size: 0.7rem; }
   .login-box h1 { font-size: 24px; }
   .login-box p { font-size: 13px; }
 }
