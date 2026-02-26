@@ -552,48 +552,9 @@ button:hover {
   transform: scale(1.1);
   transition: transform 0.2s;
 }
-.music-player-container {
-  position: fixed;
-  bottom: -120px;
-  left: 20px;
-  right: 20px;
-  max-width: 900px;
-  margin: 0 auto;
-  background: rgba(20, 20, 40, 0.92);
-  backdrop-filter: blur(10px);
-  border-radius: 16px;
-  padding: 12px 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.6);
-  transition: bottom 0.4s ease, opacity 0.4s;
-  z-index: 9999;
-  color: #fff;
-}
-.music-player-container.active {
-  bottom: 20px;
-  opacity: 1;
-}
 
-.music-toggle-btn {
-  position: fixed;
-  bottom: 30px;
-  right: 30px;
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background: #5060ff;
-  color: white;
-  border: none;
-  font-size: 1.6rem;
-  cursor: pointer;
-  box-shadow: 0 6px 20px rgba(80,96,255,0.4);
-  z-index: 10000;
-  transition: transform 0.3s;
-}
 
-.music-toggle-btn:hover { transform: scale(1.1); }
+
 
 .album-art-wrapper {
   position: relative;
@@ -642,29 +603,6 @@ button:hover {
   position: relative;
 }
 
-.volume-popover {
-  position: absolute;
-  bottom: 50px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #333;
-  padding: 10px 14px;
-  border-radius: 12px;
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.25s;
-}
-
-.volume-module:hover .volume-popover {
-  opacity: 1;
-  visibility: visible;
-  bottom: 60px;
-}
-
-.volume-popover input[type="range"] {
-  width: 120px;
-  accent-color: #5060ff;
-}
 
 /* ===== انیمیشن‌ها ===== */
 @keyframes spin {
@@ -700,14 +638,7 @@ button:hover {
         max-width: 400px;
     }
     
-    .music-player-container {
-        bottom: 10px;
-        left: 10px;
-        right: 10px;
-        border-radius: 30px;
-        flex-wrap: wrap;
-        justify-content: center;
-    }
+   
 }
 .left, .right {
     flex-shrink: 1;
@@ -769,4 +700,118 @@ button:hover {
         gap: 10px;
         align-items: flex-start;
     }
+}
+/* ===== پلیر موسیقی - نسخه نهایی (جایگزین کامل) ===== */
+
+/* کانتینر اصلی */
+#musicPlayerContainer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 10000;
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  pointer-events: none;
+}
+
+/* موبایل: مخفی در ابتدا */
+@media (max-width: 767px) {
+  #musicPlayerContainer {
+    transform: translateY(100%);
+  }
+  #musicPlayerContainer.open {
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+}
+
+/* دسکتاپ: همیشه باز */
+@media (min-width: 768px) {
+  #musicPlayerContainer {
+    position: relative;
+    bottom: auto;
+    transform: none !important;
+    pointer-events: auto;
+  }
+  #mobile-mini-toggle,
+  #miniPlayerBar {
+    display: none !important;
+  }
+}
+
+/* دکمه گرد موبایل */
+#mobile-mini-toggle {
+  position: fixed;
+  bottom: 90px;
+  right: 20px;
+  z-index: 11000;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #06b6d4, #3b82f6);
+  color: white;
+  font-size: 1.6rem;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 8px 30px rgba(6,182,212,0.5);
+  transition: all 0.3s ease;
+}
+
+#mobile-mini-toggle:hover { transform: scale(1.12); }
+#mobile-mini-toggle:active { transform: scale(0.94); }
+
+/* مینی‌بار موبایل */
+#miniPlayerBar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 9999;
+  background: rgba(15,23,42,0.96);
+  backdrop-filter: blur(16px);
+  border-top: 1px solid rgba(6,182,212,0.35);
+  box-shadow: 0 -8px 25px rgba(0,0,0,0.6);
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: white;
+}
+
+/* پلیر کامل */
+#fullPlayer {
+  background: linear-gradient(to bottom, #0f172a, #000);
+  border-top: 1px solid rgba(6,182,212,0.4);
+  backdrop-filter: blur(12px);
+  padding: 20px 16px;
+  color: white;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+/* مخفی کردن در موبایل وقتی بسته */
+@media (max-width: 767px) {
+  #fullPlayer {
+    display: none;
+  }
+  #musicPlayerContainer.open #fullPlayer {
+    display: block;
+  }
+  #musicPlayerContainer.open #miniPlayerBar {
+    display: none;
+  }
+}
+
+/* waveform */
+#waveform {
+  background: rgba(30,41,59,0.75);
+  border-radius: 12px;
+  overflow: hidden;
+  height: 80px !important;
+}
+
+/* دکمه‌ها */
+button:hover {
+  transform: scale(1.15);
+  color: #06b6d4;
 }
