@@ -770,7 +770,7 @@ const MusicManager = {
         },
         async initCore() {
             await ErrorHandler.safeExecute(DataManager.init.bind(DataManager), 'DataManager');
-            await ErrorHandler.safeExecute(JWTManager.init?.bind(JWTManager), 'JWTManager');
+           // await ErrorHandler.safeExecute(JWTManager.init?.bind(JWTManager), 'JWTManager');
         },
         async initFeatures() {
             await ErrorHandler.safeExecute(ParticleEngine.init.bind(ParticleEngine), 'ParticleEngine');
