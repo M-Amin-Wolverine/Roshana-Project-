@@ -513,7 +513,45 @@ input:focus {
 }
 
 /* ===== پلیر موسیقی ===== */
+/* استایل‌های پلیر موبایل + دسکتاپ */
+.music-player {
+  transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
 
+@media (max-width: 767px) {
+  .music-player {
+    transform: translateY(100%);
+  }
+  .music-player.open {
+    transform: translateY(0);
+  }
+  .mini-player-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 49;
+  }
+  #mobile-mini-toggle {
+    box-shadow: 0 10px 25px rgba(0, 255, 255, 0.3);
+  }
+}
+
+.full-player {
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.wave-container #waveform {
+  background: rgba(0,0,0,0.3);
+  border-radius: 8px;
+}
+
+/* آیکون‌ها و دکمه‌ها */
+button:hover {
+  transform: scale(1.1);
+  transition: transform 0.2s;
+}
 .music-player-container {
   position: fixed;
   bottom: -120px;
