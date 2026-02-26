@@ -96,11 +96,18 @@
             document.body.setAttribute('data-theme', this.currentTheme);
         },
         setupToggle() {
-            const toggleBtn = document.getElementById('theme-toggle');
-            if (toggleBtn) {
-                toggleBtn.addEventListener('click', () => this.toggleTheme());
-            }
-        },
+            const toggleButtons = document.querySelectorAll('.theme-toggle');
+            if (toggleButtons.length === 0) {
+               console.warn('هیچ دکمه theme-toggle پیدا نشد');
+               return;
+    }
+
+        toggleButtons.forEach(btn => {
+            btn.addEventListener('click', () => this.toggleTheme());
+    });
+
+    console.log(`🎨 ${toggleButtons.length} دکمه تغییر تم ثبت شد`);
+}
         setupSystemThemeListener() {
             window.matchMedia('(prefers-color-scheme: dark)').addListener((e) => {
                 if (!localStorage.getItem('rooshan-theme')) {
@@ -638,6 +645,32 @@
             }, duration);
         }
     };
+// =================== مدیریت ساعت و تاریخ شمسی ===================
+const DateTimeManager = {
+    init() {
+        const datetimeEl = document.getElementById('datetime');
+        if (!datetimeEl) {
+            console.warn('المان #datetime پیدا نشد');
+            return;
+        }
+
+        const updateDateTime = () => {
+            const now = new Date();
+            // تاریخ و ساعت شمسی با Intl (بدون کتابخانه اضافی)
+            const persianDate = now.toLocaleString('fa-IR', {
+                dateStyle: 'full',
+                timeStyle: 'medium'
+            });
+            datetimeEl.innerHTML = persianDate;
+        };
+
+        // آپدیت اولیه
+        updateDateTime();
+        // هر ثانیه آپدیت
+        setInterval(updateDateTime, 1000);
+        console.log('🕒 DateTimeManager فعال شد');
+    }
+};
 // =================== مدیریت موسیقی (پلیر waveform پیشرفته) ===================
 const MusicManager = {
     wavesurfer: null,
@@ -781,6 +814,7 @@ const MusicManager = {
             await ErrorHandler.safeExecute(AnimationManager.init.bind(AnimationManager), 'AnimationManager');
             await ErrorHandler.safeExecute(PerformanceMonitor.init.bind(PerformanceMonitor), 'PerformanceMonitor');
             await ErrorHandler.safeExecute(MusicManager.init.bind(MusicManager), 'MusicManager');
+            DateTimeManager.init();  // ← اضافه کن اینجا
             NotificationManager.init();
           
         },
