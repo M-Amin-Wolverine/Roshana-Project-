@@ -100,14 +100,14 @@
             if (toggleButtons.length === 0) {
                console.warn('هیچ دکمه theme-toggle پیدا نشد');
                return;
-    }
+            }
 
         toggleButtons.forEach(btn => {
             btn.addEventListener('click', () => this.toggleTheme());
     });
 
     console.log(`🎨 ${toggleButtons.length} دکمه تغییر تم ثبت شد`);
-}
+},
         setupSystemThemeListener() {
             window.matchMedia('(prefers-color-scheme: dark)').addListener((e) => {
                 if (!localStorage.getItem('rooshan-theme')) {
