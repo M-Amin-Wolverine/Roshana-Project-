@@ -673,117 +673,134 @@ const DateTimeManager = {
 };
 // =================== مدیریت موسیقی (پلیر waveform پیشرفته) ===================
 const MusicManager = {
-    wavesurfer: null,
-    isInitialized: false,
-    init() {
-        // چک کردن وجود المان‌های HTML پلیر
-        const container = document.getElementById('musicPlayerContainer');
-        if (!container) {
-            console.warn('Music player HTML not found → پلیر غیرفعال');
-            return;
-        }
-        const toggleBtn = document.getElementById('musicToggleBtn');
-        const closeBtn = document.getElementById('musicClose');
-        const playPauseBtn = document.getElementById('musicPlayPause');
-        const playPath = document.getElementById('playPath');
-        const currentTime = document.getElementById('currentTime');
-        const duration = document.getElementById('duration');
-        const volumeControl = document.getElementById('volumeControl');
-        const muteBtn = document.getElementById('muteBtn');
-        const volumeIcon = document.getElementById('volumeIcon');
-        if (!toggleBtn || !playPauseBtn) return;
-        // ولوم اولیه از CONFIG
-        if (volumeControl) volumeControl.value = CONFIG.music.volume;
-        // اتصال رویدادها
-        toggleBtn.addEventListener('click', () => this.togglePlayer());
-        closeBtn?.addEventListener('click', () => this.closePlayer());
-        playPauseBtn.addEventListener('click', () => this.playPause());
-        volumeControl?.addEventListener('input', e => this.setVolume(e.target.value));
-        muteBtn?.addEventListener('click', () => this.toggleMute());
-        // اگر autoPlay فعال بود، پلیر را باز کن
-        if (CONFIG.music.autoPlay) {
-            this.togglePlayer(true);
-        }
-        this.isInitialized = true;
-        console.log('🎵 MusicManager آماده شد');
-    },
-    async togglePlayer(autoPlay = false) {
-        const container = document.getElementById('musicPlayerContainer');
-        container.classList.toggle('active');
-        if (!this.wavesurfer) {
-            await this.initWaveSurfer();
-        }
-        if (this.wavesurfer && (autoPlay || container.classList.contains('active'))) {
-            this.wavesurfer.play().catch(err => console.warn('Play failed:', err));
-        } else if (this.wavesurfer) {
-            this.wavesurfer.pause();
-        }
-    },
-    closePlayer() {
-        document.getElementById('musicPlayerContainer').classList.remove('active');
-        if (this.wavesurfer) this.wavesurfer.pause();
-    },
-    playPause() {
-        if (this.wavesurfer) {
-            this.wavesurfer.playPause();
-        } else {
-            this.togglePlayer(true);
-        }
-    },
-    async initWaveSurfer() {
-        if (typeof WaveSurfer === 'undefined') {
-            console.error('WaveSurfer لود نشده است. اسکریپت CDN را چک کنید.');
-            return;
-        }
-        this.wavesurfer = WaveSurfer.create({
-            container: '#waveform',
-            waveColor: '#888cf8',
-            progressColor: '#5060ff',
-            cursorColor: '#ffffff88',
-            barWidth: 3,
-            barGap: 2,
-            height: 48,
-            normalize: true,
-            barRadius: 4
-        });
-        try {
-            await this.wavesurfer.load(CONFIG.music.url);
-            this.wavesurfer.on('ready', () => {
-                document.getElementById('duration').textContent = this.formatTime(this.wavesurfer.getDuration());
-                this.setVolume(CONFIG.music.volume);
-            });
-            this.wavesurfer.on('audioprocess', () => {
-                document.getElementById('currentTime').textContent = this.formatTime(this.wavesurfer.getCurrentTime());
-            });
-            this.wavesurfer.on('play', () => {
-                document.getElementById('playPath').setAttribute('d', 'M6,19H10V5H6V19M14,5V19H18V5H14Z'); // آیکون pause
-            });
-            this.wavesurfer.on('pause', () => {
-                document.getElementById('playPath').setAttribute('d', 'M8,5.14V19.14L19,12.14L8,5.14Z'); // آیکون play
-            });
-        } catch (err) {
-            console.error('خطا در لود آهنگ:', err);
-            Utils.showNotification('آهنگ لود نشد. لینک را چک کنید.', 'error');
-        }
-    },
-    setVolume(value) {
-        if (this.wavesurfer) {
-            this.wavesurfer.setVolume(parseFloat(value));
-        }
-    },
-    toggleMute() {
-        if (this.wavesurfer) {
-            const muted = this.wavesurfer.getMuted();
-            this.wavesurfer.setMuted(!muted);
-            // می‌توانی آیکون mute را اینجا تغییر دهی
-        }
-    },
-    formatTime(seconds) {
-        if (!seconds || isNaN(seconds)) return '00:00';
-        const min = Math.floor(seconds / 60);
-        const sec = Math.floor(seconds % 60);
-        return `${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
+  wavesurfer: null,
+  isInitialized: false,
+  isOpen: false,
+
+  init() {
+    const container = document.getElementById('musicPlayerContainer');
+    if (!container) return console.warn('پلیر HTML پیدا نشد');
+
+    const mobileToggle = document.getElementById('mobile-mini-toggle');
+    const miniPlayPause = document.getElementById('miniPlayPause');
+    const closeBtn = document.getElementById('closeFullPlayer') || document.getElementById('musicClose');
+    const playPauseMain = document.getElementById('musicPlayPause');
+    const volumeCtrl = document.getElementById('volumeControl');
+
+    // باز کردن پلیر در موبایل
+    if (mobileToggle) {
+      mobileToggle.addEventListener('click', () => this.togglePlayerUI(true));
     }
+
+    // بستن پلیر کامل
+    if (closeBtn) {
+      closeBtn.addEventListener('click', () => this.togglePlayerUI(false));
+    }
+
+    // پخش/توقف از مینی‌بار
+    if (miniPlayPause) {
+      miniPlayPause.addEventListener('click', () => this.playPause());
+    }
+
+    // پخش/توقف اصلی
+    if (playPauseMain) {
+      playPauseMain.addEventListener('click', () => this.playPause());
+    }
+
+    // ولوم
+    if (volumeCtrl) {
+      volumeCtrl.addEventListener('input', e => {
+        if (this.wavesurfer) this.wavesurfer.setVolume(parseFloat(e.target.value));
+      });
+    }
+
+    this.isInitialized = true;
+    console.log('🎵 MusicManager موبایل-ریسپانسیو آماده شد');
+  },
+
+  togglePlayerUI(open) {
+    const container = document.getElementById('musicPlayerContainer');
+    if (!container) return;
+
+    this.isOpen = open;
+    container.classList.toggle('open', open);
+
+    // اگر باز شد و آهنگ لود نشده، لود کن
+    if (open && !this.wavesurfer) {
+      this.initWaveSurfer();
+    }
+  },
+
+  async initWaveSurfer() {
+    if (typeof WaveSurfer === 'undefined') {
+      return console.error('WaveSurfer لود نشده');
+    }
+
+    this.wavesurfer = WaveSurfer.create({
+      container: '#waveform',
+      waveColor: '#4f46e5',
+      progressColor: '#06b6d4',
+      cursorColor: '#ffffff88',
+      barWidth: 3,
+      barGap: 2,
+      height: 60,
+      normalize: true,
+      barRadius: 4
+    });
+
+    try {
+      await this.wavesurfer.load(CONFIG.music.url);
+      this.wavesurfer.on('ready', () => {
+        document.getElementById('duration').textContent = this.formatTime(this.wavesurfer.getDuration());
+        document.getElementById('trackTitle').textContent = 'باران عشق'; // یا داینامیک
+        document.getElementById('trackArtist').textContent = 'ناصر چشم‌آذر';
+        this.updateMiniBar();
+      });
+
+      this.wavesurfer.on('audioprocess', () => {
+        document.getElementById('currentTime').textContent = this.formatTime(this.wavesurfer.getCurrentTime());
+      });
+
+      this.wavesurfer.on('play', () => this.updatePlayIcons(true));
+      this.wavesurfer.on('pause', () => this.updatePlayIcons(false));
+    } catch (err) {
+      console.error('خطا در لود آهنگ:', err);
+    }
+  },
+
+  playPause() {
+    if (this.wavesurfer) {
+      this.wavesurfer.playPause();
+    }
+  },
+
+  updatePlayIcons(isPlaying) {
+    const iconMain = document.querySelector('#playPath');
+    const iconMini = document.querySelector('#miniPlayPause i');
+    const path = isPlaying 
+      ? 'M6,19H10V5H6V19M14,5V19H18V5H14Z'  // pause
+      : 'M8,5.14V19.14L19,12.14L8,5.14Z';  // play
+
+    if (iconMain) iconMain.setAttribute('d', path);
+    if (iconMini) iconMini.className = isPlaying ? 'fas fa-pause' : 'fas fa-play';
+  },
+
+  updateMiniBar() {
+    const title = document.getElementById('trackTitle')?.textContent || 'نام آهنگ';
+    const artist = document.getElementById('trackArtist')?.textContent || 'نام خواننده';
+    const cover = document.getElementById('trackCover')?.src;
+
+    if (document.getElementById('miniTitle')) document.getElementById('miniTitle').textContent = title;
+    if (document.getElementById('miniArtist')) document.getElementById('miniArtist').textContent = artist;
+    if (document.getElementById('miniCover')) document.getElementById('miniCover').src = cover || 'https://via.placeholder.com/44';
+  },
+
+  formatTime(seconds) {
+    if (!seconds || isNaN(seconds)) return '00:00';
+    const min = Math.floor(seconds / 60);
+    const sec = Math.floor(seconds % 60);
+    return `${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
+  }
 };
     // =================== سیستم راه‌اندازی ===================
     const Bootstrapper = {
