@@ -1,195 +1,0 @@
-<html lang="fa" dir="rtl"><head><style>body {transition: opacity ease-in 0.2s; } 
-body[unresolved] {opacity: 0; display: block; overflow: hidden; position: relative; } 
-</style>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-  <meta name="theme-color" content="#0a1118">
-  
-  <title>فرتاک | ورود به سامانه یکپارچه دانشگاه صدا و سیما</title>
-
-  <!-- فونت&zwnj;ها -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;900&amp;family=Tajawal:wght@400;500;700;900&amp;display=swap" rel="stylesheet">
-
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/stats.js/r17/stats.min.js"></script>
-  <script src="js/script.js"></script>
-  <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css">
-
-  <!-- favicon ساده -->
-  <link rel="icon" href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text y=%22.9em%22 font-size=%2290%22&gt;🌟&lt;/text&gt;&lt;/svg&gt;">
-</head>
-<body data-theme="dark" class="">
-
-  <!-- ذرات نور پس&zwnj;زمینه -->
-  <canvas id="particles-canvas" aria-hidden="true"></canvas>
-
-  <div class="container">
-    <!-- بخش چپ - برندینگ (مخفی در موبایل) -->
-    <section class="left" aria-label="بخش معرفی و برندینگ">
-      <div class="image-wrapper">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/f/f4/%D8%B5%D8%AD%D9%86_%D9%88%D8%B1%D9%88%D8%AF%DB%8C_%D8%AF%D8%A7%D9%86%D8%B4%DA%AF%D8%A7%D9%87_%D8%B5%D8%AF%D8%A7_%D9%88_%D8%B3%DB%8C%D9%85%D8%A7.png" alt="صحن ورودی دانشگاه صدا و سیما - نماد پروژه روشنــا" loading="lazy" decoding="async">
-        <div class="glass-overlay"></div>
-      </div>
-
-      <div class="branding-content">
-        <h1 class="branding-logo">دانشگاه صدا و سیما</h1>
-        <div class="project-name">پروژه «نور امید»</div>
-        <p class="slogan">جوانان انقلابی، روایت را به دست می&zwnj;گیرند</p>
-        <p class="slogan highlight">روشنــا: مشعل امید در جنگ رسانه&zwnj;ای</p>
-
-        <!-- ویژگی&zwnj;های برجسته -->
-        <div class="branding-features">
-          <span class="feature-badge">🚀 نسل نوین رسانه</span>
-          <span class="feature-badge">⚡ سریع، امن، هوشمند</span>
-          <span class="feature-badge">🌐 یکپارچه و متصل</span>
-        </div>
-      </div>
-    </section>
-
-    <!-- بخش راست - فرم ورود -->
-    <main class="right" role="main" aria-label="فرم ورود به سامانه فرتاک">
-      <div class="login-box animate__fadeIn">
-        <!-- نوار اطلاعات -->
-        <div class="info-bar">
-          <div id="datetime" class="datetime-display">
-            <span class="loading-spinner"></span> در حال بارگذاری...
-          </div>
-          <div id="user-ip" class="ip-display">
-            <span class="loading-spinner"></span> IP: در حال بارگذاری...
-          </div>
-        </div>
-
-        <!-- دکمه تغییر تم -->
-        <button id="theme-toggle" class="theme-toggle" aria-label="تغییر بین تم روشن و تاریک" title="تغییر تم">
-          <span class="icon-sun">☀️</span>
-          <span class="icon-moon">🌙</span>
-        </button>
-
-        <!-- عنوان و خوش&zwnj;آمدگویی -->
-        <h2 class="login-title">ورود به سامانه فرتاک</h2>
-        <p class="login-subtitle">
-          به <span class="highlight">سامانه یکپارچه دانشگاه صدا و سیما</span> خوش آمدید!<br>
-          دانشگاه صدا و سیما – <strong>نبض رسانه انقلاب</strong>
-        </p>
-
-        <!-- فرم -->
-        <form id="login-form" class="login-form" autocomplete="off" novalidate="">
-          <div class="form-group">
-            <label for="username">نام کاربری</label>
-            <div class="input-wrapper">
-              <span class="input-icon">👤</span>
-              <input type="text" id="username" placeholder="مثال: student123" required="" autofocus="" minlength="3" aria-describedby="username-hint">
-            </div>
-            
-          </div>
-
-          <div class="form-group password-group">
-            <label for="password">رمز عبور</label>
-            <div class="input-wrapper">
-              <span class="input-icon">🔒</span>
-              <input type="password" id="password" placeholder="••••••••" required="" minlength="6" aria-describedby="password-hint">
-            </div>
-            
-          </div>
-
-          <div class="options">
-            <label class="remember-me">
-              <input type="checkbox" id="remember" checked="">
-              <span class="checkbox-text">مرا به خاطر بسپار</span>
-            </label>
-            <a href="#" class="forgot-link" id="forgot-password">فراموشی رمز عبور؟</a>
-          </div>
-
-          <button type="submit" class="login-btn" id="login-btn">
-            <span class="btn-text">ورود به سامانه</span>
-          </button>
-        </form>
-
-        <!-- متن کمکی + تماس -->
-        <div class="helper-text">
-          <p>جهت بازیابی رمز یا مشکلات ورود با پشتیبانی تماس بگیرید:</p>
-          <div class="helper-contact">
-            <span>📞 ۰۲۱-۲۲۱۶۸۵۴۰</span>
-            <span>✉️ support@iribu.ac.ir</span>
-          </div>
-        </div>
-
-        <!-- آب و هوا -->
-        <div id="weather" class="weather-display">
-          <span class="loading-spinner"></span>
-          در حال دریافت اطلاعات آب و هوا...
-        </div>
-
-        <!-- لوگوها -->
-        <div class="logos-footer">
-          <div class="logo-card" data-tooltip="سازمان صدا و سیما">
-            <img src="https://iribonline.ir/files/pr/1404/other/header-new2.jpg" alt="لوگوی سازمان صدا و سیما" loading="lazy">
-            <span>سازمان صدا و سیما</span>
-          </div>
-          <div class="logo-card" data-tooltip="دانشگاه صدا و سیما">
-            <img src="https://iribu.ac.ir/static/assets/img/iribuIcon.svg.png" alt="لوگوی دانشگاه صدا و سیما (جایگزین رسمی)" loading="lazy" onerror="this.src='https://iribu.ac.ir/static/assets/img/iribuIcon.svg.png'">
-            <span>دانشگاه صدا و سیما</span>
-          </div>
-          <div class="logo-card" data-tooltip="پروژه نور امید">
-            <img src="images/1669183679155.jpg" alt="پروژه نور امید" loading="lazy" onerror="this.src='https://via.placeholder.com/80?text=نور+امید'">
-            <span>پروژه نور امید</span>
-          </div>
-          <div class="logo-card" data-tooltip="روشنــا">
-            <img src="images/f4af4631-3005-4221-8087-5009c7c48b80.jpg" alt="لوگوی روشنــا" loading="lazy" onerror="this.src='https://via.placeholder.com/80?text=روشنا'">
-            <span>روشنــا</span>
-          </div>
-        </div>
-
-        <!-- لینک&zwnj;های مفید -->
-        <div class="useful-links">
-          <a href="#" class="useful-link">درباره روشنــا</a>
-          <span class="link-separator">|</span>
-          <a href="#" class="useful-link">تماس با پشتیبانی</a>
-          <span class="link-separator">|</span>
-          <a href="#" class="useful-link">قوانین و حریم خصوصی</a>
-        </div>
-      </div>
-    </main>
-  </div>
-
-  <!-- دکمه موسیقی -->
-  <!-- پلیر موسیقی پیشرفته -->
-<div class="music-player-container" id="musicPlayerContainer">
-  <button id="musicPlayPause" class="music-control-btn" title="پخش/توقف">
-    <i class="fas fa-play"></i>
-  </button>
-  
-  <div class="music-waveform" id="waveform"></div>
-  
-  <div class="music-volume-container">
-    <i class="fas fa-volume-up" id="volumeIcon"></i>
-    <input type="range" id="volumeControl" class="volume-slider" min="0" max="100" value="50">
-  </div>
-  
-  <button id="musicClose" class="music-close-btn" title="بستن پلیر">
-    <i class="fas fa-times"></i>
-  </button>
-</div>
-
-<!-- دکمه باز کردن پلیر (وقتی بسته باشه) -->
-<button id="musicToggleBtn" class="music-toggle-btn" title="باز کردن پلیر موسیقی">
-  <i class="fas fa-music"></i>
-</button>
-
-
-  <!-- کانتینر نوتیفیکیشن -->
-  <div id="notification-container"></div>
-
-  <!-- اسکریپت JS -->
-  <script src="js/script.js"></script>
-
-  <!-- برای جلوگیری از FOUC (Flash of Unstyled Content) -->
-  <script>
-    document.body.classList.remove('preload');
-  </script>
-
-
-<veepn-lock-screen><style>@font-face{font-family:FigtreeVF;src:url(chrome-extension://majdfhpaihoncoakbjgbdhglocklcgno/fonts/FigtreeVF.woff2) format("woff2 supports variations"),url(chrome-extension://majdfhpaihoncoakbjgbdhglocklcgno/fonts/FigtreeVF.woff2) format("woff2-variations");font-weight:100 1000;font-display:swap}</style></veepn-lock-screen></body></html>
